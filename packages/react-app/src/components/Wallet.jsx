@@ -43,7 +43,6 @@ export default function Wallet(props) {
         }}
         rotate={-90}
         style={{
-          padding: 7,
           color: props.color ? props.color : "#1890ff",
           cursor: "pointer",
           fontSize: 28,
@@ -52,8 +51,8 @@ export default function Wallet(props) {
       />
     </Tooltip>
   ) : (
-    ""
-  );
+      ""
+    );
 
   let display;
   let receiveButton;
@@ -85,52 +84,52 @@ export default function Wallet(props) {
       </Button>
     );
     privateKeyButton = (
-     <Button key="hide" onClick={()=>{setPK(selectedAddress);setQr("")}}>
-       <KeyOutlined /> Private Key
-     </Button>
-   )
- }else if(pk){
+      <Button key="hide" onClick={() => { setPK(selectedAddress); setQr("") }}>
+        <KeyOutlined /> Private Key
+      </Button>
+    )
+  } else if (pk) {
 
-   let pk = localStorage.getItem("metaPrivateKey")
-   let wallet = new ethers.Wallet(pk)
+    let pk = localStorage.getItem("metaPrivateKey")
+    let wallet = new ethers.Wallet(pk)
 
-   if(wallet.address!=selectedAddress){
-     display = (
-       <div>
-         <b>*injected account*, private key unknown</b>
-       </div>
-     )
-   }else{
-     display = (
-       <div>
-         <b>Private Key:</b>
+    if (wallet.address !== selectedAddress) {
+      display = (
+        <div>
+          <b>*injected account*, private key unknown</b>
+        </div>
+      )
+    } else {
+      display = (
+        <div>
+          <b>Private Key:</b>
 
-         <div>
-          <Text copyable>{pk}</Text>
+          <div>
+            <Text copyable>{pk}</Text>
           </div>
 
-          <hr/>
+          <hr />
 
-         <i>Point your camera phone at qr code to open in <a target="_blank" href={"https://xdai.io/"+pk}>burner wallet</a>:</i>
-         <QR value={"https://xdai.io/"+pk} size={"450"} level={"H"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:false}}/>
+          <i>Point your camera phone at qr code to open in <a target="_blank" rel="noopener noreferrer" href={"https://xdai.io/" + pk}>burner wallet</a>:</i>
+          <QR value={"https://xdai.io/" + pk} size={"450"} level={"H"} includeMargin={true} renderAs={"svg"} imageSettings={{ excavate: false }} />
 
-         <Paragraph style={{fontSize:"16"}} copyable>{"https://xdai.io/"+pk}</Paragraph>
+          <Paragraph style={{ fontSize: "16" }} copyable>{"https://xdai.io/" + pk}</Paragraph>
 
 
-       </div>
-     )
-   }
+        </div>
+      )
+    }
 
-   receiveButton = (
-     <Button key="receive" onClick={()=>{setQr(selectedAddress);setPK("")}}>
-       <QrcodeOutlined /> Receive
-     </Button>
-   )
-   privateKeyButton = (
-     <Button key="hide" onClick={()=>{setPK("");setQr("")}}>
-       <KeyOutlined /> Hide
-     </Button>
-   )
+    receiveButton = (
+      <Button key="receive" onClick={() => { setQr(selectedAddress); setPK("") }}>
+        <QrcodeOutlined /> Receive
+      </Button>
+    )
+    privateKeyButton = (
+      <Button key="hide" onClick={() => { setPK(""); setQr("") }}>
+        <KeyOutlined /> Hide
+      </Button>
+    )
   } else {
     const inputStyle = {
       padding: 10,
@@ -170,7 +169,7 @@ export default function Wallet(props) {
       </Button>
     );
     privateKeyButton = (
-      <Button key="hide" onClick={()=>{setPK(selectedAddress);setQr("")}}>
+      <Button key="hide" onClick={() => { setPK(selectedAddress); setQr("") }}>
         <KeyOutlined /> Private Key
       </Button>
     );

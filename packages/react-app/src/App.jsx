@@ -1,28 +1,23 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
-import "antd/dist/antd.css";
-import { getDefaultProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import "./App.css";
-import { Row, Col, Button, Tabs, Menu } from "antd";
-import Web3Modal from "web3modal";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+// blockchain libs
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { useUserAddress } from "eth-hooks";
-import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useBalance, useEventListener } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
-import { Transactor } from "./helpers";
+import { getDefaultProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { formatEther } from "@ethersproject/units";
-//import Hints from "./Hints";
+import { useUserAddress } from "eth-hooks";
+// ui libs
+import Web3Modal from "web3modal";
+// common libs
+import { Header, Account, Projects } from "./components";
+import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useBalance, useEventListener } from "./hooks";
+import { Transactor } from "./helpers";
+// views
 import { Hints, ExampleUI } from "./views"
+// assets
+import "antd/dist/antd.css";
+import "./App.css";
+
 /*
-    Welcome to 🏗 scaffold-eth !
-
-    Code:
-    https://github.com/austintgriffith/scaffold-eth
-
-    Support:
-    https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
-    or DM @austingriffith on twitter or telegram
-
     You should get your own Infura.io ID and put it in `constants.js`
     (this is your connection to the main Ethereum network for ENS etc.)
 */
@@ -101,31 +96,32 @@ function App() {
 
   console.log("Location:", window.location.pathname)
 
-  const [route, setRoute] = useState();
-  useEffect(() => {
-    console.log("SETTING ROUTE", window.location.pathname)
-    setRoute(window.location.pathname)
-  }, [window.location.pathname]);
+  // const [route, setRoute] = useState();
+  // useEffect(() => {
+  //   console.log("SETTING ROUTE", window.location.pathname)
+  //   setRoute(window.location.pathname)
+  // }, [window.location.pathname]);
 
   return (
     <div className="App">
 
       {/* ✏️ Edit the header and change the title to your project name */}
-      <Header />
+      <Header>
+        {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
+        <Account
+          address={address}
+          localProvider={localProvider}
+          userProvider={userProvider}
+          mainnetProvider={mainnetProvider}
+          price={price}
+          web3Modal={web3Modal}
+          loadWeb3Modal={loadWeb3Modal}
+          logoutOfWeb3Modal={logoutOfWeb3Modal}
+          blockExplorer={blockExplorer}
+        />
+      </Header>
 
       <BrowserRouter>
-
-        <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link onClick={() => { setRoute("/") }} to="/">YourContract</Link>
-          </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link onClick={() => { setRoute("/hints") }} to="/hints">Hints</Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link onClick={() => { setRoute("/exampleui") }} to="/exampleui">ExampleUI</Link>
-          </Menu.Item>
-        </Menu>
 
         <Switch>
           <Route exact path="/">
@@ -134,13 +130,14 @@ function App() {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-            <Contract
+            {/* <Contract
               name="YourContract"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
-            />
+            /> */}
+            <Projects />
           </Route>
           <Route path="/hints">
             <Hints
@@ -162,65 +159,7 @@ function App() {
           </Route>
         </Switch>
       </BrowserRouter>
-
-
-      {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
-        <Account
-          address={address}
-          localProvider={localProvider}
-          userProvider={userProvider}
-          mainnetProvider={mainnetProvider}
-          price={price}
-          web3Modal={web3Modal}
-          loadWeb3Modal={loadWeb3Modal}
-          logoutOfWeb3Modal={logoutOfWeb3Modal}
-          blockExplorer={blockExplorer}
-        />
-      </div>
-
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
-            <Ramp price={price} address={address} />
-          </Col>
-
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-               </span>
-               Support
-             </Button>
-          </Col>
-        </Row>
-
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={24}>
-            {
-
-              /*  if the local provider has a signer, let's show the faucet:  */
-              localProvider && localProvider.connection && localProvider.connection.url && localProvider.connection.url.indexOf("localhost") >= 0 && !process.env.REACT_APP_PROVIDER && price > 1 ? (
-                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-              ) : (
-                  ""
-                )
-            }
-          </Col>
-        </Row>
-      </div>
-
-    </div>
+    </div >
   );
 }
 

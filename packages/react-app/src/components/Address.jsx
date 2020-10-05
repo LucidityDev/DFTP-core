@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Blockies from "react-blockies";
+import styled from "styled-components";
 import { Typography, Skeleton } from "antd";
+import { Text, Box, Flex } from "rimble-ui";
 import { useLookupAddress } from "eth-hooks";
+
+
+const StyledAddress = styled.a`
+  color: #222 !important;
+  font-size: 16px;
+  text-decoration: none;
+`;
 
 /*
 
@@ -16,14 +25,36 @@ import { useLookupAddress } from "eth-hooks";
 
 */
 
-const { Text } = Typography;
+const { Text: TextAnt } = Typography;
 
 const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || "https://etherscan.io/"}${"address/"}${address}`;
 
-export default function Address(props) {
-  const ens = useLookupAddress(props.ensProvider, props.value);
+const Address = ({
+  ensProvider,
+  value,
+  size,
+  blockExplorer,
+  minimized,
+  onChange,
+  fontSize
+}) => {
+  const ens = useLookupAddress(ensProvider, value);
+  const [address, setAddress] = useState(null);
 
-  if (!props.value) {
+  // set address depending on size
+  useEffect(() => {
+    if (ens) {
+      setAddress(ens);
+    } else if (size === "short") {
+      setAddress(`${value.substr(0, 6)}...${value.substr(-4)}`);
+    } else if (size === "long") {
+      setAddress(value);
+    } else {
+      setAddress(value.substr(0, 6));
+    }
+  }, [value, ens, size])
+
+  if (!value) {
     return (
       <span>
         <Skeleton avatar paragraph={{ rows: 1 }} />
@@ -31,52 +62,44 @@ export default function Address(props) {
     );
   }
 
-  let displayAddress = props.value.substr(0, 6);
-
-  if (ens) {
-    displayAddress = ens;
-  } else if (props.size === "short") {
-    displayAddress += "..." + props.value.substr(-4);
-  } else if (props.size === "long") {
-    displayAddress = props.value;
-  }
-
-  const etherscanLink = blockExplorerLink(props.value, props.blockExplorer);
-  if (props.minimized) {
+  const etherscanLink = blockExplorerLink(value, blockExplorer);
+  if (minimized) {
     return (
       <span style={{ verticalAlign: "middle" }}>
-        <a style={{ color: "#222222" }} target={"_blank"} href={etherscanLink}>
-          <Blockies seed={props.value.toLowerCase()} size={8} scale={2} />
+        <a style={{ color: "#222222" }} target="_blank" rel="noopener noreferrer" href={etherscanLink}>
+          <Blockies seed={value.toLowerCase()} size={8} scale={2} />
         </a>
       </span>
     );
   }
 
-  let text;
-  if (props.onChange) {
-    text = (
-      <Text editable={{ onChange: props.onChange }} copyable={{ text: props.value }}>
-        <a style={{ color: "#222222" }} target={"_blank"} href={etherscanLink}>
-          {displayAddress}
-        </a>
-      </Text>
-    );
-  } else {
-    text = (
-      <Text copyable={{ text: props.value }}>
-        <a style={{ color: "#222222" }} target={"_blank"} href={etherscanLink}>
-          {displayAddress}
-        </a>
-      </Text>
-    );
+  const addressProps = {
+    copyable: { text: value }
+  }
+  if (onChange) {
+    addressProps.editable = { onChange }
   }
 
   return (
-    <span>
-      <span style={{ verticalAlign: "middle" }}>
-        <Blockies seed={props.value.toLowerCase()} size={8} scale={props.fontSize?props.fontSize/7:4} />
-      </span>
-      <span style={{ verticalAlign: "middle", paddingLeft: 5, fontSize: props.fontSize?props.fontSize:28 }}>{text}</span>
-    </span>
+    <Flex alignItems="center" mr={4}>
+      <Blockies seed={value.toLowerCase()} size={6} scale={fontSize ? fontSize / 7 : 4} />
+      <Box style={{ padding: '0 4px' }}>
+        <Text
+          fontWeight={600}
+          fontSize={"12px"}
+          color={"#2B2C36"}
+          lineHeight={1}
+        >
+          Connected as
+        </Text>
+        <TextAnt {...addressProps} >
+          <StyledAddress target={"_blank"} href={etherscanLink}>
+            {address}
+          </StyledAddress>
+        </TextAnt>
+      </Box>
+    </Flex>
   );
 }
+
+export default Address;

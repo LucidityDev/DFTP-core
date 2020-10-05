@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Divider } from "antd";
 import tryToDisplay from "./utils";
 
-const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, triggerRefresh}) => {
+const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, triggerRefresh }) => {
   const [variable, setVariable] = useState("");
 
   const refresh = async () => {
@@ -19,6 +19,7 @@ const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, trig
 
   useEffect(() => {
     refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshRequired, contractFunction]);
 
   return (

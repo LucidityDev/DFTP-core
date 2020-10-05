@@ -1,14 +1,26 @@
 import React from "react";
 import { PageHeader } from "antd";
+import { Flex } from "rimble-ui";
+import styled from 'styled-components';
 
-export default function Header() {
+const StyledHeader = styled(Flex)`
+  border-bottom: 1px solid #d6d6d6;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.01);
+`;
+
+const Header = ({ children }) => {
   return (
-    <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank" rel="noopener noreferrer">
-      <PageHeader
-        title="🏗 scaffold-eth"
-        subTitle="forkable Ethereum dev stack focused on fast product iteration"
-        style={{ cursor: "pointer" }}
-      />
-    </a>
+    <StyledHeader justifyContent="space-between">
+      <a href="/">
+        <PageHeader
+          title="Lucidity"
+          subTitle="Decentralized Transparency Fund Platform"
+          style={{ cursor: "pointer" }}
+        />
+      </a>
+      {children}
+    </StyledHeader>
   );
 }
+
+export default Header;

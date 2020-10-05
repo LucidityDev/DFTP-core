@@ -14,11 +14,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Install dependencies
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10'
+      - run: cd packages/react-app && yarn && cd ../..
+      
       - name: Build project
         uses: actions/setup-node@v1
         with:
-            node-version: '12'
-        - run: yarn build
+          node-version: '12'
+      - run: yarn build
 
       - name: Deploy draft to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.4
@@ -26,7 +32,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
-          build-dir: './build'
+          build-dir: './packages/react-app/build'
           draft: true
           comment-on-commit: true
 
@@ -45,7 +51,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12'
-        - run: yarn build
+      - run: cd packages/react-app && yarn && cd ../..
+      - run: yarn build
 
       - name: Deploy production to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.4
@@ -53,5 +60,5 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
-          build-dir: './build'
+          build-dir: './packages/react-app/build'
           comment-on-commit: true
