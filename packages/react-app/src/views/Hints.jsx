@@ -3,12 +3,12 @@ import { formatEther } from "@ethersproject/units";
 import { Address, AddressInput } from "../components";
 
 
-export default function Hints({yourLocalBalance, mainnetProvider, price, address }) {
+export default function Hints({ yourLocalBalance, mainnetProvider, price, address }) {
 
   return (
     <div>
       <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>👷</span>
+        <span style={{ marginRight: 8 }} role="img" aria-label="emoji">👷</span>
         Edit your <b>contract</b> in
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           packages/buidler/contracts
@@ -16,7 +16,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
       </div>
 
       <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🛰</span>
+        <span style={{ marginRight: 8 }} role="img" aria-label="emoji">🛰</span>
         <b>compile/deploy</b> with
         <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           yarn run deploy
@@ -24,7 +24,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
       </div>
 
       <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🚀</span>
+        <span style={{ marginRight: 8 }} role="img" aria-label="emoji">🚀</span>
         Your <b>contract artifacts</b> are automatically injected into your frontend at
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           packages/react-app/src/contracts/
@@ -32,7 +32,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
       </div>
 
       <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🎛</span>
+        <span style={{ marginRight: 8 }} role="img" aria-label="emoji">🎛</span>
         Edit your <b>frontend</b> in
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           packages/reactapp/src/App.js
@@ -40,7 +40,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
       </div>
 
       <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>🔭</span>
+        <span style={{ marginRight: 8 }} role="img" aria-label="emoji">🔭</span>
         explore the
         <span
           style={{
@@ -55,7 +55,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
           🖇 hooks
         </span>
         and
-        <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
+        <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }} role="img" aria-label="emoji">
           📦 components
         </span>
       </div>
@@ -65,7 +65,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
         <span style={{ margin: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           useBalance()
         </span>{" "}
-        hook keeps track of your balance: <b>{formatEther(yourLocalBalance?yourLocalBalance:0)}</b>
+        hook keeps track of your balance: <b>{formatEther(yourLocalBalance ? yourLocalBalance : 0)}</b>
       </div>
 
       <div style={{ marginTop: 32 }}>
@@ -93,7 +93,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
       </div>
 
       <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>💧</span>
+        <span style={{ marginRight: 8 }} role="img" aria-label="emoji">💧</span>
         use the <b>faucet</b> to send funds to
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           <Address value={address} minimized /> {address}
@@ -101,7 +101,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
       </div>
 
       <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>📡</span>
+        <span style={{ marginRight: 8 }} role="img" aria-label="emoji">📡</span>
         deploy to a testnet or mainnet by editing
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           packages/buidler/buidler.config.js
@@ -114,7 +114,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
 
 
       <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>🔑</span>
+        <span style={{ marginRight: 8 }} role="img" aria-label="emoji">🔑</span>
         <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           yarn run generate
         </span>
@@ -122,14 +122,14 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           packages/buidler
         </span>
-        <div style={{marginTop:8}}>(use <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
-            yarn run account
+        <div style={{ marginTop: 8 }}>(use <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
+          yarn run account
           </span> to display deployer address and balance)</div>
       </div>
 
 
       <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>⚙️</span>
+        <span style={{ marginRight: 8 }} role="img" aria-label="emoji">⚙️</span>
         build your app with
         <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           yarn run build
@@ -137,7 +137,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
       </div>
 
       <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>🚢</span>
+        <span style={{ marginRight: 8 }} role="img" aria-label="emoji">🚢</span>
         ship it!
         <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           yarn run surge
@@ -153,7 +153,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
       </div>
 
       <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>💬</span>
+        <span style={{ marginRight: 8 }} role="img" aria-label="emoji">💬</span>
         for support, join this
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           <a target="_blank" rel="noopener noreferrer" href="https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA">
@@ -162,7 +162,9 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
         </span>
       </div>
       <div style={{ padding: 128 }}>
-        <blink>🛠 Check out your browser's developer console for more... (inpect -> console) 🚀</blink>
+        <span role="img" aria-label="emoji">
+          🛠 Check out your browser's developer console for more... (inpect -> console) 🚀
+          </span>
       </div>
     </div>
   );

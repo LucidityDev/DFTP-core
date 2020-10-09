@@ -46,6 +46,8 @@
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.3.1",
+    "rimble-ui": "^0.14.0",
+    "styled-components": "^5.2.0",
     "web3modal": "^1.5.0"
   },
   "devDependencies": {
@@ -66,7 +68,7 @@
     "extends": "react-app"
   },
   "scripts": {
-    "build": "react-scripts build",
+    "build": "react-scripts build --max-old-space-size=8192",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "test": "react-scripts test",

@@ -1,26 +1,33 @@
 import React, { useState } from "react";
 import { formatEther } from "@ethersproject/units";
 import { usePoller } from "eth-hooks";
+// import Wallet from "./Wallet";
 
 /*
 
   <Balance
     address={selectedAddress}
-    provider={props.provider}
-    dollarMultiplier={props.price}
+    provider={provider}
+    dollarMultiplier={price}
   />
 
 */
 
 
-export default function Balance(props) {
+const Balance = ({
+  address,
+  provider,
+  pollTime,
+  dollarMultiplier,
+  size
+}) => {
   const [dollarMode, setDollarMode] = useState(true);
   const [balance, setBalance] = useState();
 
   const getBalance = async () => {
-    if (props.address && props.provider) {
+    if (address && provider) {
       try {
-        const newBalance = await props.provider.getBalance(props.address);
+        const newBalance = await provider.getBalance(address);
         setBalance(newBalance);
       } catch (e) {
         console.log(e);
@@ -28,38 +35,28 @@ export default function Balance(props) {
     }
   };
 
-  usePoller(
-    () => {
-      getBalance();
-    },
-    props.pollTime ? props.pollTime : 1999,
+  usePoller(() => getBalance(),
+    pollTime ? pollTime : 1999,
   );
 
   let floatBalance = parseFloat("0.00");
-
-  let usingBalance = balance;
-
-  if (typeof props.balance !== "undefined") {
-    usingBalance = props.balance;
-  }
-
-  if (usingBalance) {
-    const etherBalance = formatEther(usingBalance);
+  if (balance) {
+    const etherBalance = formatEther(balance);
     parseFloat(etherBalance).toFixed(2);
     floatBalance = parseFloat(etherBalance);
   }
 
   let displayBalance = floatBalance.toFixed(4);
 
-  if (props.dollarMultiplier && dollarMode) {
-    displayBalance = "$" + (floatBalance * props.dollarMultiplier).toFixed(2);
+  if (dollarMultiplier && dollarMode) {
+    displayBalance = "$" + (floatBalance * dollarMultiplier).toFixed(2);
   }
 
   return (
     <span
       style={{
         verticalAlign: "middle",
-        fontSize: props.size ? props.size : 24,
+        fontSize: size ? size : 24,
         padding: 8,
         cursor: "pointer",
       }}
@@ -71,3 +68,5 @@ export default function Balance(props) {
     </span>
   );
 }
+
+export default Balance;

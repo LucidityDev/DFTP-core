@@ -1,8 +1,9 @@
 import React from "react";
 import { Button } from "antd";
+import { Flex, Box, Text } from "rimble-ui";
 import Address from "./Address";
 import Balance from "./Balance";
-import Wallet from "./Wallet";
+import Wallet from "./Wallet"
 
 export default function Account({
   address,
@@ -49,17 +50,29 @@ export default function Account({
   const display = minimized ? (
     ""
   ) : (
-    <span>
-      {address ? <Address value={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} /> : "Connecting..."}
-      <Balance address={address} provider={localProvider} dollarMultiplier={price} />
-      <Wallet address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} />
-    </span>
-  );
+      <>
+        {address ? <Address value={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} /> : "Connecting..."}
+        <Flex alignItems="center">
+          <Wallet address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} />
+          <Box>
+            <Text
+              fontWeight={600}
+              fontSize={"12px"}
+              color={"#2B2C36"}
+              lineHeight={1}
+            >
+              Balance
+            </Text>
+            <Balance size={16} address={address} provider={localProvider} dollarMultiplier={price} />
+          </Box>
+        </Flex>
+      </>
+    );
 
   return (
-    <div>
+    <Flex justifyContent={"space-between"} p={3}>
       {display}
       {modalButtons}
-    </div>
+    </Flex>
   );
 }
