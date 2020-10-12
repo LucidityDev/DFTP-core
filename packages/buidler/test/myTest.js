@@ -1,26 +1,107 @@
 const { ethers } = require("@nomiclabs/buidler");
 const { use, expect } = require("chai");
 const { solidity } = require("ethereum-waffle");
+const { abi } = require("../artifacts/SecurityToken.json");
 
 use(solidity);
+//make sure you have 'npx buidler node' running
+describe("TokenFactory contract test", function () {
+  let TokenExchange, TokenFactory, CT, AAVEvault;
+  const INITIAL_NFT_PRICE = ethers.utils.parseUnits("3", "ether");
 
-describe("My Dapp", function () {
-  let myContract;
+  it("deploy contracts", async function () {
+    const [owner, bidder, auditor, AAVEfunder] = await ethers.getSigners(); //jsonrpc signers from default 20 accounts with 10000 ETH each
 
-  describe("YourContract", function () {
-    it("Should deploy YourContract", async function () {
-      const YourContract = await ethers.getContractFactory("YourContract");
+    /*
+    const AAVEvaultContract = await ethers.getContractFactory(
+      "AaveCollateralVault"
+    ); //contract name here
+    AAVEvault = await AAVEvaultContract.deploy();
+    */
 
-      myContract = await YourContract.deploy();
-    });
+    /*
+    const TokenExchangeContract = await ethers.getContractFactory(
+      "TokenExchange"
+    ); //contract name here
+    TokenExchange = await TokenExchangeContract.deploy();
+    */
 
-    describe("setPurpose()", function () {
-      it("Should be able to set a new purpose", async function () {
-        const newPurpose = "Test Purpose";
+    const TokenFactoryContract = await ethers.getContractFactory(
+      "TokenFactory"
+    ); //contract name here
+    TokenFactory = await TokenFactoryContract.connect(bidder).deploy();
 
-        await myContract.setPurpose(newPurpose);
-        expect(await myContract.purpose()).to.equal(newPurpose);
-      });
-    });
+    const CTContract = await ethers.getContractFactory("ConditionalTokens"); //contract name here
+    CT = await CTContract.deploy();
   });
+
+  it("deploy first project (Called from openlaw)", async function () {
+    const [owner, bidder, auditor, funder] = await ethers.getSigners(); //jsonrpc signers from default 20 accounts with 10000 ETH each
+
+    //const minter_role = await ProjectNFT.MINTER_ROLE();
+    const agriProject = await TokenFactory.connect(owner).deployNewProject(
+      "AgriTest",
+      "AT",
+      "linkhere",
+      owner.getAddress(),
+      bidder.getAddress(),
+      auditor.getAddress()
+    );
+
+    const projectData = await TokenFactory.getProject(
+      ethers.BigNumber.from("0")
+    );
+
+    const firstProjectContract = new ethers.Contract(
+      projectData.owner,
+      abi,
+      owner
+    );
+    expect(
+      (await firstProjectContract.projectName()) == "AgriTest",
+      "project did not get init correctly"
+    );
+  });
+
+  //multisig safe factory create with new project
+  xit("create multisig", async function () {});
+
+  it("sell firstCoin", async function () {
+    const [owner, bidder, auditor, funder] = await ethers.getSigners(); //jsonrpc signers from default 20 accounts with 10000 ETH each
+
+    //get first project contract again
+    const projectData = await TokenFactory.getProject(
+      ethers.BigNumber.from("0")
+    );
+
+    const firstProjectContract = new ethers.Contract(
+      projectData.owner,
+      abi,
+      owner
+    );
+
+    //https://github.com/ethers-io/ethers.js/issues/563
+    let overrides = {
+      value: ethers.utils.parseEther("1.0"),
+    };
+
+    //buy and mint first funding token
+    await firstProjectContract.connect(funder).buyOne(
+      ethers.utils.parseEther("1.0"), //funded value
+      ethers.BigNumber.from("7"), //tenor
+      overrides
+    );
+
+    expect(
+      firstProjectContract.ownerOf(ethers.BigNumber.from("0")) ==
+        funder.getAddress(),
+      "buyOne() didn't work"
+    );
+  });
+
+  //conditional token with multisig as oracle
+  //auditor multisig sign
+  //send to bidder wallet :)
+
+  //test on rinkeby?
 });
