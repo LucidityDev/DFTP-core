@@ -77,7 +77,7 @@ contract SecurityToken is ERC721, AccessControl, ReentrancyGuard {
         uint256 _fundingValue,
         uint256 _tenor
     ) public returns (uint256) {
-        require(_projectFunder == msg.sender, "make this more secure later"); //only projectbidder can mint
+        require(_projectFunder == msg.sender, "make this more secure later"); //probably gets annoying to have project owner approve everything, but will check this later.
 
         uint256 tokenId = nonce.current();
         nonce.increment(); //Note that ID starts at 0.

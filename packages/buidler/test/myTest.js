@@ -5,7 +5,7 @@ const { abi } = require("../artifacts/SecurityToken.json");
 
 use(solidity);
 //make sure you have 'npx buidler node' running
-describe("TokenFactory contract test", function () {
+describe("Lucidity Full Feature Test", function () {
   let TokenExchange, TokenFactory, CT, AAVEvault;
   const INITIAL_NFT_PRICE = ethers.utils.parseUnits("3", "ether");
 
