@@ -8,8 +8,8 @@ import "./App.css";
     //PLEASE SUPPLY YOUR OWN LOGIN CREDENTIALS FOR OPENLAW
     const URL = "https://lib.openlaw.io/api/v1/default";  //url for your openlaw instance eg. "http://myinstancename.openlaw.io"
     const TEMPLATE_NAME = "OpenLaw API Tutorial Sale Agreement"; //name of template stored on Openlaw
-    const OPENLAW_USER = 'nickmortil@tutanota.com'; //add your Openlaw login email
-    const OPENLAW_PASSWORD = 'mZcgkqzNWtA6XER' //add your Openlaw password
+    const OPENLAW_USER = ''; //add your Openlaw login email
+    const OPENLAW_PASSWORD = '' //add your Openlaw password
     //create config 
     const openLawConfig = {
       server:URL, 
