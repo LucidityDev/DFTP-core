@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.6.0 <0.7.0;
 import "./SecurityToken.sol";
+import "./HolderContract.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 /*
@@ -17,6 +18,7 @@ contract TokenFactory {
     event ProjectCreated(address tokenAddress);
 
     mapping(string => uint256) public nameToProjectIndex;
+    mapping(string => uint256) public symbolToProjectIndex;
 
     //need a constructor here too? should only auditors be allowed to deploy projects (i.e. after approval)?
 
@@ -34,21 +36,33 @@ contract TokenFactory {
         string memory _name,
         string memory _symbol,
         string memory baseURI,
+        address _ERC20token,
+        address _holder,
         address _projectOwner,
         address _projectBidder,
         address _auditors
     ) public returns (address) {
+        //need to check if name or symbol already exists
+        require(nameToProjectIndex[_name] == 0, "Name has already been taken");
+        require(
+            symbolToProjectIndex[_symbol] == 0,
+            "Symbol has already been taken"
+        );
         SecurityToken newProject = new SecurityToken(
             _name,
             _symbol,
             baseURI,
+            _ERC20token,
+            _holder,
             _projectOwner,
             _projectBidder,
             _auditors
         );
         projects.push(newProject);
+
+        nonce.increment(); //start at 1
+        symbolToProjectIndex[_symbol] = nonce.current();
         nameToProjectIndex[_name] = nonce.current();
-        nonce.increment();
 
         emit ProjectCreated(address(newProject));
 
@@ -63,17 +77,17 @@ contract TokenFactory {
      * @param _index refers to project index. Should change this to a URI mapping later.
      * @returns token contract address, name, symbol, and uri hash
      */
-    function getProject(uint256 _index)
+    function getProject(string memory _name)
         public
         view
         returns (
-            address owner,
+            address projectAddress,
             string memory name,
             string memory symbol,
             string memory baseURI
         )
     {
-        SecurityToken selectedProject = projects[_index];
+        SecurityToken selectedProject = projects[nameToProjectIndex[_name] - 1];
 
         return (
             address(selectedProject),

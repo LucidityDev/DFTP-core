@@ -1,27 +1,26 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.6.0 <0.7.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
-import "./SecurityToken.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@nomiclabs/buidler/console.sol";
 
 contract SecurityToken is ERC721, AccessControl, ReentrancyGuard {
     using Counters for Counters.Counter;
     using SafeMath for uint256;
     using Address for address payable;
 
-    event tokenMinted(uint256 tokenId, address tokenHolder);
-
+    IERC20 public ERC20token; //rinkeby
     string public projectName;
     string public projectSymbol;
-
-    mapping(address => uint256) public _balances;
+    address public owner;
+    address public bidder;
+    address public holderContract;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE"); //use bytes as it is stored in a single word of EVM, string is dynamically sized (and can't be returned from a function to a contract)
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
@@ -33,12 +32,18 @@ contract SecurityToken is ERC721, AccessControl, ReentrancyGuard {
         string memory _name,
         string memory _symbol,
         string memory baseURI,
+        address _ERC20token,
+        address _holder,
         address projectOwner,
         address projectBidder,
         address auditors
     ) public ERC721(projectName, projectSymbol) {
         projectName = _name;
         projectSymbol = _symbol;
+        owner = projectOwner;
+        bidder = projectBidder;
+        ERC20token = IERC20(_ERC20token);
+        holderContract = _holder;
         _setBaseURI(baseURI);
         _setupRole(DEFAULT_ADMIN_ROLE, projectOwner);
         _setupRole(MINTER_ROLE, projectBidder);
@@ -52,6 +57,7 @@ contract SecurityToken is ERC721, AccessControl, ReentrancyGuard {
         uint256 tenor;
     }
 
+    mapping(uint256 => FundingToken) public IDtoToken;
     FundingToken[] public fundedTokens;
 
     /*
@@ -71,73 +77,37 @@ contract SecurityToken is ERC721, AccessControl, ReentrancyGuard {
         fundedTokens.push(FundingToken(_projectFunder, _fundingValue, _tenor));
     }
 
-    //gets called by buyOne or through AAVE credit delegation
+    //gets called by buyOne (I guess AAVE can just buyone too?)
     function mint(
         address _projectFunder,
         uint256 _fundingValue,
         uint256 _tenor
-    ) public returns (uint256) {
-        require(_projectFunder == msg.sender, "make this more secure later"); //probably gets annoying to have project owner approve everything, but will check this later.
-
+    ) internal {
         uint256 tokenId = nonce.current();
         nonce.increment(); //Note that ID starts at 0.
 
         createFunding(_projectFunder, _fundingValue, _tenor); //can get funding details by calling tokenID in fundedTokens[], match to owner with tokenOfOwnerByIndex
         _safeMint(_projectFunder, tokenId);
 
-        return tokenId;
+        IDtoToken[tokenId] = fundedTokens[tokenId];
     }
 
-    //don't need exchange since value is constant for MVP
+    function recieveERC20(address _sender, uint256 _value) internal {
+        ERC20token.transferFrom(_sender, address(this), _value); //actual transfer
+    }
+
+    function approveERC20toHolder(uint256 _value) internal {
+        ERC20token.approve(holderContract, _value); //approve transfer
+    }
+
+    //don't need exchange? not sure what best practice is.
     function buyOne(uint256 _fundingValue, uint256 _tenor)
         external
         payable
         nonReentrant
     {
-        uint256 amountPaidInWei = msg.value;
-        require(amountPaidInWei > 0, "Amount paid must be greater than zero");
-
-        // Price should be in [wei / NFT]
-        // need to get the specific contract
-        //_factory do we need an interface? or is that only for inherited contracts??
-        uint256 currentPriceInWei = _fundingValue;
-        require(
-            amountPaidInWei >= currentPriceInWei,
-            "Amount paid is not enough"
-        );
-
-        uint256 tokenId = mint(msg.sender, _fundingValue, _tenor);
-
-        msg.sender.sendValue(amountPaidInWei - currentPriceInWei);
-
-        //do we transfer to multisig here?
-
-        //change minter later
-        emit tokenMinted(tokenId, msg.sender);
-    }
-
-    //need to add extra layering to burn later with repayment options/interest
-    function burn(uint256 tokenId) external {
-        require(hasRole(AUDIT_ROLE, msg.sender), "Forbidden"); //only auditors can burn
-        _burn(tokenId);
-    }
-
-    //purely for returning token data in a getter function
-    function getTokenData(uint256 _index)
-        public
-        view
-        returns (
-            address _projectFunder,
-            uint256 _fundingValue,
-            uint256 _tenor
-        )
-    {
-        FundingToken memory selectedToken = fundedTokens[_index];
-
-        return (
-            selectedToken.projectFunder, //not a public var, no getter function ()
-            selectedToken.fundingValue,
-            selectedToken.tenor
-        );
+        recieveERC20(msg.sender, _fundingValue);
+        approveERC20toHolder(_fundingValue);
+        mint(msg.sender, _fundingValue, _tenor);
     }
 }

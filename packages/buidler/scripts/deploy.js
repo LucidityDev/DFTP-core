@@ -15,24 +15,25 @@ async function main() {
   // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
 }
 
-
-
-
-
 async function deploy(name, _args) {
   const args = _args || [];
 
   console.log(` 🛰  Deploying ${name}`);
   const contractArtifacts = await ethers.getContractFactory(name);
   const contract = await contractArtifacts.deploy(...args);
-  console.log(" 📄",
+  console.log(
+    " 📄",
     chalk.cyan(name),
     "deployed to:",
     chalk.magenta(contract.address),
     "\n"
   );
   fs.writeFileSync(`artifacts/${name}.address`, contract.address);
-  console.log("💾  Artifacts (address, abi, and args) saved to: ",chalk.blue("packages/buidler/artifacts/"),"\n")
+  console.log(
+    "💾  Artifacts (address, abi, and args) saved to: ",
+    chalk.blue("packages/buidler/artifacts/"),
+    "\n"
+  );
   return contract;
 }
 
@@ -63,19 +64,20 @@ async function autoDeploy() {
 
       // Wait for last deployment to complete before starting the next
       return lastDeployment.then((resultArrSoFar) =>
-        deploy(contractName, args).then((result,b,c) => {
-
-          if(args&&result&&result.interface&&result.interface.deploy){
-            let encoded = utils.defaultAbiCoder.encode(result.interface.deploy.inputs,args)
+        deploy(contractName, args).then((result, b, c) => {
+          if (args && result && result.interface && result.interface.deploy) {
+            let encoded = utils.defaultAbiCoder.encode(
+              result.interface.deploy.inputs,
+              args
+            );
             fs.writeFileSync(`artifacts/${contractName}.args`, encoded);
           }
 
-          return [...resultArrSoFar, result]
+          return [...resultArrSoFar, result];
         })
       );
     }, Promise.resolve([]));
 }
-
 
 main()
   .then(() => process.exit(0))
