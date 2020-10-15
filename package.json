@@ -39,6 +39,7 @@
     ]
   },
   "dependencies": {
-    "openlaw": "^0.2.46"
+    "openlaw": "^0.2.46",
+    "semantic-ui-react": "^2.0.0"
   }
 }

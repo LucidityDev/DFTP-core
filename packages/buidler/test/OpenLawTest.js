@@ -12,11 +12,17 @@ describe("Openlaw negotiation test", function () {
   it("deploy contract from owner", async function () {
     const [owner, bidder] = await ethers.getSigners(); //jsonrpc signers from default 20 accounts with 10000 ETH each
 
+    //deploy neg contract
     const OpenLawFactoryContract = await ethers.getContractFactory(
       "ProjectTrackerFactory"
     ); //contract name here
     OpenLawFactory = await OpenLawFactoryContract.deploy();
-    console.log("gas costs of deploy", OpenLawFactoryContract);
+
+    //deploy OL connected contract (address 0x8858eeb3dfffa017d4bce9801d340d36cf895ccf)
+    // const BillofSaleContract = await ethers.getContractFactory(
+    //   "BillofSale"
+    // ); //contract name here
+    // BillofSale = await BillofSaleContract.deploy();
 
     console.log("terms proposed")
     //deploy project
@@ -32,7 +38,7 @@ describe("Openlaw negotiation test", function () {
       console.log(project)
   });
 
-  it("initiate bid", async function () {
+  xit("initiate bid", async function () {
     const [owner, bidder] = await ethers.getSigners(); //jsonrpc signers from default 20 accounts with 10000 ETH each
     const project = await OpenLawFactory.getProject("AgriTest");
 
