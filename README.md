@@ -1,9 +1,15 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/c8cd1e9c-ceb5-4925-87fd-fdc7f9d8424b/deploy-status)](https://app.netlify.com/sites/tender-benz-6b658e/deploys)
-[![LICENCE](https://img.shields.io/dub/l/vibe-d.svg)](https://github.com/LucidityDev/DFTP-core/blob/master/LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/LucidityDev/DFTP-core/blob/master/LICENSE)
+[![Documentation Status](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](http://ansicolortags.readthedocs.io/?badge=latest)
+[![Github all releases](https://img.shields.io/github/downloads/Naereen/StrapDown.js/total.svg)](https://GitHub.com/Naereen/StrapDown.js/releases/)
+[![GitHub pull-requests](https://img.shields.io/github/issues-pr/Naereen/StrapDown.js.svg)](https://GitHub.com/Naereen/StrapDown.js/pull/)
+[![Discord](https://img.shields.io/discord/591914197219016707.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/RD6xqv)
+
+
 
 # 💡 Lucidity
 
-## Management of Funds for Projects/Contracts/Services for Private/Public Organizations the MVP is a DAPP that will evolve in a Protocol 
+### Management of Funds for Projects/Contracts/Services for Private/Public Organizations the MVP is a DAPP that will evolve in a Protocol 
 
 
 🎛 <b>first</b>
