@@ -59,7 +59,6 @@ yarn deploy
 # Technologies Used
 
 ## Solidity
-## Aave Risk Framework
 ## CTokens
 ## The Graph API
 ## Matic
