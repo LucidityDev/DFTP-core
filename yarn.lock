@@ -1951,18 +1951,18 @@
   resolved "https://registry.yarnpkg.com/@nomiclabs/buidler-ethers/-/buidler-ethers-2.0.0.tgz#f972df98a5d9f32fce974749f3ba9d964f057f2a"
   integrity sha512-Lf5XLClEeWYo6jVrGAqGBAcKTOP6IAChAR4qcDS36BkQnWakoRKcoSbwhr2YmTNTRAvgDWTmjQYbV17udJ+Alw==
 
-"@nomiclabs/buidler-waffle@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@nomiclabs/buidler-waffle/-/buidler-waffle-2.0.0.tgz#425dd952898e63494b696f9556896975603684ff"
-  integrity sha512-slGUjMmooIFehk1EMz+gSD07x6RVhp9aEHCmjk5MDm9FuV0+1IhPrk0DDl9ZKYlb5dgTRSWOqzIOXLXhnjmt0A==
+"@nomiclabs/buidler-waffle@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@nomiclabs/buidler-waffle/-/buidler-waffle-2.1.0.tgz#9869ac829162eb57ac4e4096f0a02bd7ef54a71a"
+  integrity sha512-Z1SJOGrRCcSu9E87mFaBHi4QimNxP9ZTYtJwLZCcyszS1fi0XLgp4syzTH3QXrQUBOP2P5oQMD6uCp0gNNS3hw==
   dependencies:
     "@types/sinon-chai" "^3.2.3"
     "@types/web3" "1.0.19"
 
-"@nomiclabs/buidler@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@nomiclabs/buidler/-/buidler-1.4.1.tgz#773c98610ddd9dcf52a58a33334c9b49d0b57efa"
-  integrity sha512-yZlLTRsFg92l5kC3Pg2O6+XdhRSAH1yuyItAOdVwA00gM1as5IQa6GVb4YbI4ftGcZzyQTwmO/4j0YkfdYtTcw==
+"@nomiclabs/buidler@^1.4.7":
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@nomiclabs/buidler/-/buidler-1.4.7.tgz#88436ba53e0e830d37c16601df59da4dbffde524"
+  integrity sha512-TyJKwKyKwu82uYPneqLf5HKFr96QX7cHDT7O7Ro93zmk1b84+EH9tn3zNIO/+96DMGISp8cCRwZhct89OwblRA==
   dependencies:
     "@nomiclabs/ethereumjs-vm" "^4.1.1"
     "@sentry/node" "^5.18.1"
@@ -1978,6 +1978,7 @@
     deepmerge "^2.1.0"
     download "^7.1.0"
     enquirer "^2.3.0"
+    env-paths "^2.2.0"
     eth-sig-util "^2.5.2"
     ethereum-cryptography "^0.1.2"
     ethereumjs-abi "^0.6.8"
@@ -7040,6 +7041,11 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.0.0.tgz#68d6084cab1b079767540d80e56a39b423e4abf4"
   integrity sha512-D9f7V0JSRwIxlRI2mjMqufDrRDnx8p+eEOz7aUM9SuvF8gsBzra0/6tbjl1m8eQHrZlYj6PxqE00hZ1SAIKPLw==
 
+env-paths@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/env-paths/-/env-paths-2.2.0.tgz#cdca557dc009152917d6166e2febe1f039685e43"
+  integrity sha512-6u0VYSCo/OW6IoD5WCLLy9JUGARbamfSavcNXry/eu8aHVFei6CD3Sw+VGX5alea1i9pgPHW0mbu6Xj0uBh7gA==
+
 err-code@^2.0.0:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/err-code/-/err-code-2.0.3.tgz#23c2f3b756ffdfc608d30e27c9a941024807e7f9"
@@ -7812,15 +7818,7 @@ ethereumjs-abi@0.6.7:
     bn.js "^4.11.8"
     ethereumjs-util "^6.0.0"
 
-ethereumjs-abi@^0.6.8:
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/ethereumjs-abi/-/ethereumjs-abi-0.6.8.tgz#71bc152db099f70e62f108b7cdfca1b362c6fcae"
-  integrity sha512-Tx0r/iXI6r+lRsdvkFDlut0N08jWMnKRZ6Gkq+Nmw75lZe4e6o3EkSnkaBP5NF6+m5PTGAr9JP43N3LyeoglsA==
-  dependencies:
-    bn.js "^4.11.8"
-    ethereumjs-util "^6.0.0"
-
-"ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
+ethereumjs-abi@^0.6.8, "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
   version "0.6.8"
   resolved "git+https://github.com/ethereumjs/ethereumjs-abi.git#1cfbb13862f90f0b391d8a699544d5fe4dfb8c7b"
   dependencies:
