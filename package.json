@@ -37,5 +37,8 @@
     "packages": [
       "packages/*"
     ]
+  },
+  "dependencies": {
+    "openlaw": "^0.2.46"
   }
 }

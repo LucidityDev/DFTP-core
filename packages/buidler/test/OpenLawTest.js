@@ -16,6 +16,7 @@ describe("Openlaw negotiation test", function () {
       "ProjectTrackerFactory"
     ); //contract name here
     OpenLawFactory = await OpenLawFactoryContract.deploy();
+    console.log("gas costs of deploy", OpenLawFactoryContract);
 
     console.log("terms proposed")
     //deploy project
