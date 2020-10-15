@@ -12,6 +12,11 @@
 ### Management of Funds for Projects/Contracts/Services for Private/Public Organizations the MVP is a DAPP that will evolve in a Protocol 
 
 
+## Proposal of MVP
+
+![alt text](https://github.com/LucidityDev/DFTP-core/blob/master/research/proposal.png?raw=true)
+
+
 🎛 <b>first</b>
 
 ```bash
