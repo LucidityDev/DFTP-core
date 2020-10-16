@@ -15,6 +15,8 @@ contract SecurityToken is ERC721, AccessControl, ReentrancyGuard {
     using SafeMath for uint256;
     using Address for address payable;
 
+    event newFunder(address funder, uint256 value, uint256 tenor);
+
     IERC20 public ERC20token; //rinkeby
     string public projectName;
     string public projectSymbol;
@@ -90,6 +92,12 @@ contract SecurityToken is ERC721, AccessControl, ReentrancyGuard {
         _safeMint(_projectFunder, tokenId);
 
         IDtoToken[tokenId] = fundedTokens[tokenId];
+
+        emit newFunder(
+            fundedTokens[tokenId].projectFunder,
+            fundedTokens[tokenId].fundingValue,
+            fundedTokens[tokenId].tenor
+        );
     }
 
     function recieveERC20(address _sender, uint256 _value) internal {
