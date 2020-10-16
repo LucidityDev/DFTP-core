@@ -17,8 +17,8 @@ import { Hints, ExampleUI } from "./views"
 import "antd/dist/antd.css";
 import "./App.css";
 //openlaw
-import { APIClient, Openlaw } from 'openlaw';
-// import OpenlawApp from "./components/openlaw"
+//import { APIClient, Openlaw } from 'openlaw';
+// import OpenlawApp from "./components/openlawapp"
 
 /*
     You should get your own Infura.io ID and put it in `constants.js`
@@ -43,20 +43,20 @@ const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REA
 console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
 const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 
-//PLEASE SUPPLY YOUR OWN LOGIN CREDENTIALS FOR OPENLAW
-const URL = "https://lib.openlaw.io/api/v1/default";  //url for your openlaw instance eg. "http://myinstancename.openlaw.io"
-const TEMPLATE_NAME = "OpenLaw API Tutorial Sale Agreement"; //name of template stored on Openlaw
-const OPENLAW_USER = 'ath310@nyu.edu'; //add your Openlaw login email
-const OPENLAW_PASSWORD = 'lucidity123'; //add your Openlaw password
-//create config 
-const openLawConfig = {
-  server:URL, 
-  templateName:TEMPLATE_NAME,
-  userName:OPENLAW_USER,
-  password:OPENLAW_PASSWORD
-}
-// create an instance of the API client with url as parameter
-const apiClient = new APIClient(URL);
+// //PLEASE SUPPLY YOUR OWN LOGIN CREDENTIALS FOR OPENLAW
+// const URL = "https://lib.openlaw.io/api/v1/default";  //url for your openlaw instance eg. "http://myinstancename.openlaw.io"
+// const TEMPLATE_NAME = "OpenLaw API Tutorial Sale Agreement"; //name of template stored on Openlaw
+// const OPENLAW_USER = 'ath310@nyu.edu'; //add your Openlaw login email
+// const OPENLAW_PASSWORD = 'lucidity123'; //add your Openlaw password
+// //create config 
+// const openLawConfig = {
+//   server:URL, 
+//   templateName:TEMPLATE_NAME,
+//   userName:OPENLAW_USER,
+//   password:OPENLAW_PASSWORD
+// }
+// // create an instance of the API client with url as parameter
+// const apiClient = new APIClient(URL);
 
 function App() {
   const [injectedProvider, setInjectedProvider] = useState();
