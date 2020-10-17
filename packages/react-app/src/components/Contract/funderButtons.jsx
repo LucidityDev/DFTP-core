@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-const Buttons = (props) => {
+export const Buttons = (props) => {
   const { register, handleSubmit } = useForm();
 
   const [text, _changeText] = useState([
@@ -22,9 +22,9 @@ const Buttons = (props) => {
       <button onclick = { callAPI } className="btn btn-danger btn-sm m-2">
         Fund Project
       </button>
-      <form onSubmit={handleSubmit(onSubmitForm)}>
+      <form onSubmit={handleSubmit(callAPI)}>
         <label>
-          Ticker:
+          Amount:
           <input type="text" name="ticker" ref={register} />
         </label>
         <input type="submit" value="Submit" />
@@ -33,4 +33,3 @@ const Buttons = (props) => {
   );
 };
 
-export default Buttons;
