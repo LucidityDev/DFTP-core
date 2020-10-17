@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.6.0 <0.7.0;
 
-import "./HolderContract.sol";
+import "./HolderContractERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract HolderFactory {
@@ -18,8 +18,11 @@ contract HolderFactory {
         string memory _name,
         address _CTtokenAddress,
         address _DaiAddress,
+        address _owner,
         address _projectBidder,
-        address _projectAuditor
+        address _projectAuditor,
+        uint256[] memory _budgets,
+        uint256[] memory _timeline
     ) public returns (address) {
         //need to check if name or symbol already exists
         require(nameToHolderIndex[_name] == 0, "Name has already been taken");
@@ -27,8 +30,11 @@ contract HolderFactory {
             _name,
             _CTtokenAddress,
             _DaiAddress,
+            _owner,
             _projectBidder,
-            _projectAuditor
+            _projectAuditor,
+            _budgets,
+            _timeline
         );
         holders.push(newProject);
 

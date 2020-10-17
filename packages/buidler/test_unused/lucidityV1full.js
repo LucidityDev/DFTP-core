@@ -8,7 +8,7 @@ use(solidity);
 
 //make sure you have 'npx buidler node' running
 describe("Lucidity Full Feature Test", function () {
-  let FakeDai, HolderFactory, TokenFactory, CT;
+  let Dai, HolderFactory, TokenFactory, CT;
 
   it("deploy contracts", async function () {
     const [owner, bidder, auditor, funder] = await ethers.getSigners(); //jsonrpc signers from default 20 accounts with 10000 ETH each
@@ -27,12 +27,13 @@ describe("Lucidity Full Feature Test", function () {
     CT = await CTContract.deploy();
 
     //use USDC on testnet/mainnet
-    const FakeDaiContract = await ethers.getContractFactory("FakeDai"); //contract name here
-    FakeDai = await FakeDaiContract.connect(funder).deploy("FakeDai", "FD");
-
-    const daibalance = await FakeDai.balanceOf(funder.getAddress());
+    const DaiContract = await ethers.getContractFactory("Dai"); //contract name here
+    Dai = await DaiContract.connect(funder).deploy(ethers.BigNumber.from("0"));
+    await Dai.connect(funder).mint(funder.getAddress(),ethers.BigNumber.from("100"))
+    
+    const daibalance = await Dai.balanceOf(funder.getAddress());
     console.log("funder address: ", await funder.getAddress());
-    console.log("funder balance of FakeDai: ", daibalance.toString());
+    console.log("funder balance of Dai: ", daibalance.toString());
   });
 
   it("deploy first escrow and project (Called from openlaw)", async function () {
@@ -42,20 +43,23 @@ describe("Lucidity Full Feature Test", function () {
     await HolderFactory.connect(bidder).deployNewHolder(
       "AgriTest",
       CT.address,
-      FakeDai.address,
+      Dai.address,
+      owner.getAddress(),
       bidder.getAddress(),
-      auditor.getAddress()
+      auditor.getAddress(),
+      [ethers.BigNumber.from("300"),ethers.BigNumber.from("600"),ethers.BigNumber.from("900")]
+      [ethers.BigNumber.from("3"),ethers.BigNumber.from("6"),ethers.BigNumber.from("9")]
     );
 
     const escrow = await HolderFactory.getHolder("AgriTest");
+    console.log(escrow)
 
     //deploy project
     await TokenFactory.connect(bidder).deployNewProject(
       "AgriTest",
       "AT",
       "linkhere",
-      FakeDai.address,
-      escrow.projectAddress,
+      Dai.address,
       owner.getAddress(),
       bidder.getAddress(),
       auditor.getAddress()
@@ -68,6 +72,10 @@ describe("Lucidity Full Feature Test", function () {
       abiToken,
       owner
     );
+
+    await firstProjectContract.connect(owner).setHolder(
+      escrow.projectAddress);
+
     expect(
       (await firstProjectContract.projectName()) == "AgriTest",
       "project did not get init correctly"
@@ -95,12 +103,12 @@ describe("Lucidity Full Feature Test", function () {
     );
 
     //funder approve, then call recieve from project
-    await FakeDai.connect(funder).approve(
+    await Dai.connect(funder).approve(
       firstProjectContract.address, //spender, called by owner
       ethers.BigNumber.from("10")
     );
 
-    const allowedTransfer = await FakeDai.allowance(
+    const allowedTransfer = await Dai.allowance(
       funder.getAddress(), //owner
       firstProjectContract.address //spender
     );
@@ -120,11 +128,11 @@ describe("Lucidity Full Feature Test", function () {
       .connect(funder) //anyone can call this, idk why it won't call by itself. Pay for gas fees?
       .recieveERC20(firstProjectContract.address, ethers.BigNumber.from("10"));
 
-    const daibalance = await FakeDai.balanceOf(funder.getAddress());
-    console.log("funder balance of FakeDai: ", daibalance.toString());
+    const daibalance = await Dai.balanceOf(funder.getAddress());
+    console.log("funder balance of Dai: ", daibalance.toString());
 
-    const daibalance2 = await FakeDai.balanceOf(firstEscrow.address);
-    console.log("escrow balance of FakeDai: ", daibalance2.toString());
+    const daibalance2 = await Dai.balanceOf(firstEscrow.address);
+    console.log("escrow balance of Dai: ", daibalance2.toString());
 
     console.log(
       "Holder of minted token: ",
@@ -142,7 +150,7 @@ describe("Lucidity Full Feature Test", function () {
   });
 
   it("run through Gnosis conditional token and audit report as oracle", async function () {
-    //run a for loop through this after calling openlaw API?
+    //run a for loop through this later? optimize later. 
 
     const [owner, bidder, auditor, funder] = await ethers.getSigners(); //jsonrpc signers from default 20 accounts with 10000 ETH each
 
@@ -187,17 +195,17 @@ describe("Lucidity Full Feature Test", function () {
     );
     //4) collateral is set with getPositionId(collateral address (dai), collectionId). this is setting the type of collateral, not amount yet. This is also the ERC1155 unique identification for this token!
     const ApprovalOnePosition = await CT.connect(bidder).getPositionId(
-      FakeDai.address,
+      Dai.address,
       ApproveMilestoneOne
     );
     const RejectOnePosition = await CT.connect(bidder).getPositionId(
-      FakeDai.address,
+      Dai.address,
       RejectMilestoneOne
     );
     //5) set spender approval set to conditionaltoken contract address (already set in our case)
     //6) split position (most important step) is called by address with the collateral (collateralToken (address of dai), parentCollectionId (all 0's 32 bytes), conditionId from 1, partition (outcome slots index set value, so [6,1], amount (value/# of tokens to take))
     //now the CT is holding the collateral and address the held the collateral now holds the CT. You can now use balanceOf(address (so project address), positionId) where positionId is from step 4 to figure out how many CT for each position (outcome) you are holding.
-    const allowedTransfer = await FakeDai.allowance(
+    const allowedTransfer = await Dai.allowance(
       firstEscrow.address, //owner
       CT.address //spender
     );
@@ -209,15 +217,15 @@ describe("Lucidity Full Feature Test", function () {
     await firstEscrow
       .connect(bidder)
       .callSplitPosition(
-        FakeDai.address,
+        Dai.address,
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         conditionOne,
         [1, 2],
         ethers.BigNumber.from("10")
       );
 
-    const daibalance = await FakeDai.balanceOf(CT.address);
-    console.log("CT balance of FakeDai: ", daibalance.toString());
+    const daibalance = await Dai.balanceOf(CT.address);
+    console.log("CT balance of Dai: ", daibalance.toString());
 
     const CTbalance = await CT.balanceOf(
       firstEscrow.address,
@@ -248,6 +256,14 @@ describe("Lucidity Full Feature Test", function () {
       "Escrow balance of CT in Approved Condition after transfer: ",
       CTbalanceAfter.toString()
     );
+    const CTbalanceAfter2 = await CT.balanceOf(
+        firstEscrow.address,
+        RejectOnePosition
+      );
+      console.log(
+        "Escrow balance of CT in Rejected Condition after transfer: ",
+        CTbalanceAfter2.toString()
+      );
 
     //8) reportpayout() is called only by oracle address, with (questionId, outcome slots [1,0,0]) not sure where outcome slots are tied to addresses?
     await firstEscrow
@@ -260,21 +276,19 @@ describe("Lucidity Full Feature Test", function () {
 
     //9) redemption with redeemPositions(dai,parent(all 0's again), conditionId, indexset (outcome slots as index set so [1,0,0] is 0)). CT now get burned.
     await CT.connect(bidder).redeemPositions(
-      FakeDai.address,
+      Dai.address,
       "0x0000000000000000000000000000000000000000000000000000000000000000",
       conditionOne,
       [ethers.BigNumber.from("1")]
     );
 
-    const daibalanceend = await FakeDai.balanceOf(bidder.getAddress());
+    const daibalanceend = await Dai.balanceOf(bidder.getAddress());
     console.log(
-      "Bidder balance of FakeDai after redemption: ",
+      "Bidder balance of Dai after redemption: ",
       daibalanceend.toString()
     );
+    //escrow needs a redemption function
 
-    //so to sum it up, in our case we have 6 condition ids each with 2 outcomes (payout to bidder, or return funding to token contract) and amounts set by openlaw.
-    //Split positions called by project token contract, then send the CTs through a transfer call by bidder wallet only (set a require?).
-
-    //cheers you're done for now! :) Implement payback system later.
+    //cheers you're done for now! :) Implement payback system later, where either the escrow redeems and has to return ERC20 to token contract, or bidder sends ERC20 back. 
   });
 });

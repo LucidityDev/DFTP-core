@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.6.0 <0.7.0;
-import "./SecurityToken.sol";
-import "./HolderContract.sol";
+import "./SecurityTokenERC20.sol";
+import "./HolderContractERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 /*
@@ -37,7 +37,6 @@ contract TokenFactory {
         string memory _symbol,
         string memory baseURI,
         address _ERC20token,
-        address _holder,
         address _projectOwner,
         address _projectBidder,
         address _auditors
@@ -53,7 +52,6 @@ contract TokenFactory {
             _symbol,
             baseURI,
             _ERC20token,
-            _holder,
             _projectOwner,
             _projectBidder,
             _auditors
