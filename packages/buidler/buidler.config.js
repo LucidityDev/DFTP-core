@@ -18,7 +18,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "localhost";
+const defaultNetwork = "rinkeby";
 
 function mnemonic() {
   try {
@@ -48,7 +48,7 @@ module.exports = {
       */
     },
     rinkeby: {
-      url: "https://rinkeby.infura.io/v3/c954231486fa42ccb6d132b406483d14",//<---- YOUR INFURA ID! (or it won't work)
+      url: "https://rinkeby.infura.io/v3/d635ea6eddda4720824cc8b24380e4a9",
       accounts: {
         mnemonic: mnemonic(),
       },

@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-interface ConditionalToken {
+interface ConditionalTokens {
     function splitPosition(
         address collateralToken,
         bytes32 parentCollectionId,
@@ -25,7 +25,7 @@ contract HolderContract is ERC1155Holder {
     using SafeMath for uint256;
 
     IERC1155 private CTtoken1155; //https://forum.openzeppelin.com/t/example-on-how-to-use-erc20-token-in-another-contract/1682
-    ConditionalToken private CTtoken;
+    ConditionalTokens private CTtoken;
     IERC20 private ERC20token;
     address public CTtokenAddress;
     address public owner;
@@ -49,7 +49,7 @@ contract HolderContract is ERC1155Holder {
     ) public {
         projectName = _projectName;
         CTtoken1155 = IERC1155(_CTtokenAddress);
-        CTtoken = ConditionalToken(_CTtokenAddress);
+        CTtoken = ConditionalTokens(_CTtokenAddress);
         ERC20token = IERC20(_DaiAddress);
         CTtokenAddress = _CTtokenAddress;
         owner = _owner;

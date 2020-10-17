@@ -16,9 +16,8 @@ import { Hints, ExampleUI } from "./views"
 // assets
 import "antd/dist/antd.css";
 import "./App.css";
-//openlaw
-//import { APIClient, Openlaw } from 'openlaw';
-// import OpenlawApp from "./components/openlawapp"
+//contract components
+import { Buttons } from "./components/Contract/funderButtons"
 
 /*
     You should get your own Infura.io ID and put it in `constants.js`
@@ -42,21 +41,6 @@ const localProviderUrl = "http://localhost:8545"; // for xdai: https://dai.poa.n
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
 const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
-
-// //PLEASE SUPPLY YOUR OWN LOGIN CREDENTIALS FOR OPENLAW
-// const URL = "https://lib.openlaw.io/api/v1/default";  //url for your openlaw instance eg. "http://myinstancename.openlaw.io"
-// const TEMPLATE_NAME = "OpenLaw API Tutorial Sale Agreement"; //name of template stored on Openlaw
-// const OPENLAW_USER = 'ath310@nyu.edu'; //add your Openlaw login email
-// const OPENLAW_PASSWORD = 'lucidity123'; //add your Openlaw password
-// //create config 
-// const openLawConfig = {
-//   server:URL, 
-//   templateName:TEMPLATE_NAME,
-//   userName:OPENLAW_USER,
-//   password:OPENLAW_PASSWORD
-// }
-// // create an instance of the API client with url as parameter
-// const apiClient = new APIClient(URL);
 
 function App() {
   const [injectedProvider, setInjectedProvider] = useState();
@@ -153,6 +137,7 @@ function App() {
               address={address}
               blockExplorer={blockExplorer}
             /> */}
+            <Buttons />
             <Projects />
           </Route>
           <Route path="/hints">
