@@ -5,7 +5,7 @@ export const OwnerPage = (props) => {
     const next = "This will display status of project in the future"
         return ( 
             <React.Fragment>
-                <h4>{welcome}</h4>
+                <h5>{welcome}</h5>
                 {next}
             </React.Fragment>
          );

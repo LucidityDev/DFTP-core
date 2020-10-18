@@ -21,7 +21,7 @@ export const BidderPage = (props) => {
     }
         return ( 
             <React.Fragment>
-                <h4>{welcome}</h4>
+                <h5>{welcome}</h5>
                 <button onClick = {redeemTokens} variant="primary" className="btn-sm m-2">
                     Redeem Payout
                 </button>

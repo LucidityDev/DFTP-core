@@ -70,7 +70,7 @@ export const AuditorPage = (props) => {
 
         return ( 
             <React.Fragment>
-                <h4>{welcome}</h4>
+                <h5>{welcome}</h5>
                 <div>Use the following to control the escrow/conditional tokens </div>
                 <button onClick = {setConditions} variant="primary" className="btn-sm m-2">
                     1) Set milestone

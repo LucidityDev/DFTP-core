@@ -16,3 +16,11 @@ export { default as Header } from "./Header";
 export { default as Timeline } from "./Timeline";
 export { default as GasGauge } from "./GasGauge";
 export { default as Projects } from "./Projects";
+
+
+export const Body = styled.body`
+  background-color: #FAEBD7;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 70px);
+`;

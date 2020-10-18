@@ -11,7 +11,7 @@ import { Container, Row, Col, Card, Dropdown } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // common libs
-import { Header, Account, Projects } from "./components";
+import { Header, Account, Body } from "./components";
 import { useExchangePrice,  useUserProvider} from "./hooks";
 // assets
 import "antd/dist/antd.css";
@@ -20,7 +20,6 @@ import "./App.css";
 //added stuff
 import { ethers } from "ethers";
 import { Buttons } from "./components/mainComponents/funderButtons"
-import { ConditionalButtons } from "./components/mainComponents/conditionalButtons"
 import { useForm } from "react-hook-form";
 
 import { HomePage } from "./components/pages/HomePage"
@@ -186,7 +185,6 @@ function App() {
 
   return (
     <div className="App">
-
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header>
         {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
@@ -202,68 +200,71 @@ function App() {
           blockExplorer={blockExplorer}
         />
       </Header>
+      <Body>
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/">
+              {/*
+                  🎛 this scaffolding is full of commonly used components
+                  this <Contract/> component will automatically parse your ABI
+                  and give you a form to interact with it locally
+              */}
+              {/* <Contract
+                name="YourContract"
+                signer={userProvider.getSigner()}
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              /> */}
+              <Container fluid="md">
+                <Row className="mt-1">
+                    <Col>
+                    <Card>
+                      <div>
+                        <h5>Welcome, please select a role in the dropdown to get started. This can be changed anytime.</h5>
+                          <Dropdown onSelect={handleSelect} size="sm">
+                            <Dropdown.Toggle variant="success" id="dropdown-basic" size="sm">
+                              Roles
+                            </Dropdown.Toggle>
 
-      <BrowserRouter>
-
-        <Switch>
-          <Route exact path="/">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-            {/* <Contract
-              name="YourContract"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            /> */}
-            <Container fluid="md">
-              <Row className="mt-1">
-                  <Col>
-                  <Card>
-                    <div>
-                      <h4>Welcome, please select a role in the dropdown to get started. This can be changed anytime.</h4>
-                        <Dropdown onSelect={handleSelect} size="sm">
-                          <Dropdown.Toggle variant="success" id="dropdown-basic" size="sm">
-                            Roles
-                          </Dropdown.Toggle>
-
-                          <Dropdown.Menu>
-                            <Dropdown.Item eventKey="OwnerPage">Owner</Dropdown.Item>
-                            <Dropdown.Item eventKey="FunderPage">Funder</Dropdown.Item>
-                            <Dropdown.Item eventKey="AuditorPage">Auditor</Dropdown.Item>
-                            <Dropdown.Item eventKey="BidderPage">Bidder</Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                    </div>
-                    <div>Please {link} first otherwise search for project name below.</div>
-                      <form onSubmit={handleSubmit(updateContracts)}>
-                        <label>
-                          <input type="text" name="value" ref={register} />
-                        </label>
-                        <input type="submit" value="Submit" />
-                      </form>
-                      <Buttons 
-                        address={address} 
-                        provider ={userProvider} 
-                        firstEscrow = {firstEscrow}
-                        firstProjectContract = {firstProjectContract}
-                        Dai = {Dai}/>
-                    </Card>
-                    <Card className="mt-1">
-                      {PageState}
-                    </Card>
-                    <Card className="mt-1">
-                      <div>List of all Projects and Funders coming soon...</div>
-                    </Card>
-                </Col>
-              </Row>
-            </Container>
-          </Route>
-        </Switch>
-      </BrowserRouter>
+                            <Dropdown.Menu>
+                              <Dropdown.Item eventKey="OwnerPage">Owner</Dropdown.Item>
+                              <Dropdown.Item eventKey="FunderPage">Funder</Dropdown.Item>
+                              <Dropdown.Item eventKey="AuditorPage">Auditor</Dropdown.Item>
+                              <Dropdown.Item eventKey="BidderPage">Bidder</Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
+                      </div>
+                      </Card>
+                      <Card className="mt-1">
+                      <h6 classname="mt-1">Please {link} for new projects, otherwise search for project name below:</h6>
+                        <form onSubmit={handleSubmit(updateContracts)}>
+                          <label>
+                            <input type="text" name="value" ref={register} />
+                          </label>
+                          <input type="submit" value="Submit" />
+                        </form>
+                        {PageState}
+                      </Card>
+                      <Card className="mt-1">
+                        <div>List of all Projects and Funders coming soon...</div>
+                      </Card>
+                  </Col>
+                </Row>
+              </Container>
+                <div className="fixed-bottom">
+                  <h5 style={{color: "black"}}>Wallet faucet here</h5>
+                  <Buttons 
+                    address={address} 
+                    provider ={userProvider} 
+                    firstEscrow = {firstEscrow}
+                    firstProjectContract = {firstProjectContract}
+                    Dai = {Dai}/>
+                </div>
+            </Route>
+          </Switch>
+        </BrowserRouter>
+      </Body>
     </div >
   );
 }
