@@ -33,8 +33,8 @@ contract HolderContract is ERC1155Holder {
     address public auditor; //change to array later
     string public projectName;
     uint256 public numberMilestones = 3; //make this dynamic later, should we store
-    uint256[] public budgets;
-    uint256[] public timeline;
+    uint256 public budgetsOne;
+    uint256 public timelineOne;
     uint256 public totalValue = 0;
 
     constructor(
@@ -44,8 +44,8 @@ contract HolderContract is ERC1155Holder {
         address _owner,
         address _bidder,
         address _auditor,
-        uint256[] memory _budgets,
-        uint256[] memory _timeline
+        uint256 _budgetOne,
+        uint256 _timelineOne
     ) public {
         projectName = _projectName;
         CTtoken1155 = IERC1155(_CTtokenAddress);
@@ -55,8 +55,8 @@ contract HolderContract is ERC1155Holder {
         owner = _owner;
         bidder = _bidder;
         auditor = _auditor;
-        budgets = _budgets;
-        timeline = _timeline;
+        budgetsOne = _budgetOne;
+        timelineOne = _timelineOne;
     }
 
     function recieveERC20(address _sender, uint256 _value) external {
@@ -68,14 +68,6 @@ contract HolderContract is ERC1155Holder {
     // Helper functions
     function getBalance() external view returns (uint256) {
         return address(this).balance;
-    }
-
-    function getBudgets() external view returns (uint256[] memory) {
-        return budgets;
-    }
-
-    function getTimeline() external view returns (uint256[] memory) {
-        return timeline;
     }
 
     //CT functions//

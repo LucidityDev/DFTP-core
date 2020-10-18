@@ -51,6 +51,9 @@ describe("Lucidity Full Feature Test", function () {
     const daibalance = await Dai.balanceOf(owner.getAddress());
     console.log("meta address: ", await owner.getAddress());
     console.log("meta balance of Dai: ", daibalance.toString());
+
+    console.log("tokenfactory address: ", TokenFactory.address);
+    console.log("holderfactory address: ", HolderFactory.address);
   });
 
   it("deploy first escrow and project (Called from openlaw)", async function () {
@@ -62,8 +65,8 @@ describe("Lucidity Full Feature Test", function () {
       owner.getAddress(),
       owner.getAddress(),
       owner.getAddress(),
-      [ethers.BigNumber.from("300"),ethers.BigNumber.from("600"),ethers.BigNumber.from("900")],
-      [ethers.BigNumber.from("3"),ethers.BigNumber.from("6"),ethers.BigNumber.from("9")],
+      ethers.BigNumber.from("300"),
+      ethers.BigNumber.from("3"),
       overrides
     );
 

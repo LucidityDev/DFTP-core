@@ -51,7 +51,7 @@ describe("Rinkeby Deploy and Test", function () {
     // ); //contract name here
     // HolderFactory = await HolderFactoryContract.connect(owner).deploy();
 
-    HolderFactory = new ethers.Contract("0x981530042B28ca09b0FF01554FAa87BDD7D69a99", abiHolder, provider);
+    HolderFactory = new ethers.Contract("0xdd67Fff3e64522d7Fd3534EDD783B0CA6618b949", abiHolder, provider);
     console.log("Escrow Factory: ", HolderFactory.address)
 
     //https://docs.ethers.io/ethers.js/v5-beta/api-contract.html#overrides
@@ -59,21 +59,21 @@ describe("Rinkeby Deploy and Test", function () {
       gasLimit: ethers.BigNumber.from("9500000"),
     };
 
-    // //deploy escrow
-    // // await HolderFactory.connect(owner).deployNewHolder(
-    // //   "AgriTest",
-    // //   "0x36bede640D19981A82090519bC1626249984c908", //CT address on rinkeby
-    //   // Dai.address,
-    //   // owner.getAddress(),
-    //   // bidder.getAddress(),
-    //   // auditor.getAddress(),
-    //   // [ethers.BigNumber.from("300"),ethers.BigNumber.from("600"),ethers.BigNumber.from("900")],
-    //   // [ethers.BigNumber.from("3"),ethers.BigNumber.from("6"),ethers.BigNumber.from("9")],
-    //   // overrides
-    // // );
+    //deploy escrow
+    // await HolderFactory.connect(owner).deployNewHolder(
+    //   "AgriTest",
+    //   "0x36bede640D19981A82090519bC1626249984c908", //CT address on rinkeby
+      // Dai.address,
+      // owner.getAddress(),
+      // bidder.getAddress(),
+      // auditor.getAddress(),
+      // [ethers.BigNumber.from("300"),ethers.BigNumber.from("600"),ethers.BigNumber.from("900")],
+      // [ethers.BigNumber.from("3"),ethers.BigNumber.from("6"),ethers.BigNumber.from("9")],
+      // overrides
+    // );
 
     const escrow = new ethers.Contract("0x32530d25E0448E7B0da28B80a778613f8A02adB6", abiHolderC, provider);
-    console.log("First Escrow: ", escrow.address)
+    console.log("(old) First Escrow: ", escrow.address)
 
     // // //deploy project
     // // await TokenFactory.connect(owner).deployNewProject(
@@ -88,7 +88,7 @@ describe("Rinkeby Deploy and Test", function () {
     // // );
 
     const project = new ethers.Contract("0xE6a9cf47cA7e6692a6c27EB0D59e857C5b160E86", abiToken, provider);
-    console.log("First Token/Project: ", project.address)
+    console.log("(old) First Token/Project: ", project.address)
     await project.connect(owner).setHolder(
     escrow.projectAddress);
 

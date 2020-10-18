@@ -14,8 +14,11 @@ import { ethers } from "ethers";
 import { Buttons } from "./components/funderButtons"
 import { ConditionalButtons } from "./components/conditionalButtons"
 import { useUserAddress } from "eth-hooks";
+import { useForm } from "react-hook-form";
 const { abi: abiToken } = require("./abis/SecurityToken.json");
 const { abi: abiEscrow } = require("./abis/HolderContract.json");
+const { abi: abiTokenF } = require("./abis/TokenFactory.json");
+const { abi: abiEscrowF } = require("./abis/HolderFactory.json");
 const { abi: abiDai } = require("./abis/Dai.json");
 const { abi: abiCT } = require("./abis/ConditionalTokens.json");
 /* saving this here in case we want to deploy projects in a function/through UI later
@@ -31,10 +34,10 @@ const contract = deployContract(signer, BuidlerArtifact, [constructorArgs]);
 2) Start react app
 3) click give self 1 ETH
 4) run buidler test on frontend test script (make sure your metamask mnemonic is saved in mnemonic.txt in buidler folder (and add to gitignore))
-5) change contract addresses below
-6) relink contracts button
-7) may have to reset metamask account to sync nonce
-8) click update balance, if this works then everything should work now. 
+5) change contract addresses below. You may have to restart the app to relink them. 
+6) may have to reset metamask account to sync nonce
+7) click update balance, if this works then everything should work now. 
+8) search for "AgriTest" to link those contracts
 */
 
 function WalletButton({ provider, loadWeb3Modal }) {
@@ -59,6 +62,9 @@ function App() {
   const [provider, setProvider] = useState();
   const [ethBalance, setEthBalance] = useState(["loading..."]);
   const [daiBalance, setDaiBalance] = useState([]);
+  const [firstEscrow, setEscrow] = useState([]);
+  const [firstProjectContract, setProject] = useState([]);
+  const { register, handleSubmit } = useForm(); //for project name submission
   const address = useUserAddress(provider);
   
   //initial links
@@ -74,43 +80,38 @@ function App() {
     provider
   );
 
-  let firstEscrow = new ethers.Contract(
-    "0xa88d6E9AAE48f0bBD5e17c1bc6c76bDE9Ab51567",
-    abiEscrow,
+  let HolderFactory = new ethers.Contract(
+    "0x057F0ea335ADBeF55e66F9ddeE98Bc53D45dFFD1",
+    abiEscrowF,
     provider
   );
 
-  let firstProjectContract = new ethers.Contract(
-    "0xFccc25BB40d52ab78b4736D4576D7ff594103C45",
-    abiToken,
+  let TokenFactory = new ethers.Contract(
+    "0x83Fbd04ccce2AeDd94E8e9783De26FE5D5D8a26B",
+    abiTokenF,
     provider
   );
 
-  const updateContracts = () => {
-    //relink all contracts after deploy
-    Dai = new ethers.Contract(
-      "0x5D49B56C954D11249F59f03287619bE5c6174879",
-      abiDai,
-      provider
-    );
+  //update after project name search
+  const updateContracts = async (formData) => {
+    console.log("searching project name: ", formData.value)
+    const escrow = await HolderFactory.getHolder(formData.value);
 
-    CT = new ethers.Contract(
-      "0xaB2d7Ca5361B1f8E944543063d63098589bdcD1B",
-      abiCT,
-      provider
-    );
-
-    firstEscrow = new ethers.Contract(
-      "0xa88d6E9AAE48f0bBD5e17c1bc6c76bDE9Ab51567",
+    setEscrow(new ethers.Contract(
+      escrow.projectAddress,
       abiEscrow,
       provider
-    );
+    ))
 
-    firstProjectContract = new ethers.Contract(
-      "0xFccc25BB40d52ab78b4736D4576D7ff594103C45",
+    const project = await TokenFactory.getProject(formData.value);
+
+    setProject(new ethers.Contract(
+      project.projectAddress,
       abiToken,
       provider
-    );
+    ))
+    
+    console.log("project and escrow linked");
   }
 
   /* Open wallet selection modal. */
@@ -158,12 +159,17 @@ function App() {
       </Header>
       <Body>
       <div>Please fill out RFP first: {link}.</div>
-      
+      <form onSubmit={handleSubmit(updateContracts)}>
+        <label>
+          Search for project name:
+          <input type="text" name="value" ref={register} />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
       <Buttons 
         address={address} 
         provider ={provider} 
         onCall = {callValue}
-        onUpdate = {updateContracts}
         firstEscrow = {firstEscrow}
         firstProjectContract = {firstProjectContract}
         Dai = {Dai}/>

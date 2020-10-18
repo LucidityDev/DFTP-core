@@ -47,8 +47,8 @@ describe("Lucidity Full Feature Test", function () {
       owner.getAddress(),
       bidder.getAddress(),
       auditor.getAddress(),
-      [ethers.BigNumber.from("300"),ethers.BigNumber.from("600"),ethers.BigNumber.from("900")],
-      [ethers.BigNumber.from("3"),ethers.BigNumber.from("6"),ethers.BigNumber.from("9")]
+      ethers.BigNumber.from("300"),
+      ethers.BigNumber.from("3")
     );
 
     const escrow = await HolderFactory.getHolder("AgriTest");
@@ -59,9 +59,9 @@ describe("Lucidity Full Feature Test", function () {
       owner
     );
 
-    const budgets = await firstEscrow.getBudgets()
+    const budgets = await firstEscrow.budgetsOne()
     console.log("budgets: ", budgets.toString())
-    const timeline = await firstEscrow.getTimeline()
+    const timeline = await firstEscrow.timelineOne()
     console.log("timeline: ", timeline.toString())
 
     //deploy project
