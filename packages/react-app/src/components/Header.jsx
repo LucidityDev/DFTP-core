@@ -14,7 +14,7 @@ const Header = ({ children }) => {
       <a href="/">
         <PageHeader
           title="Lucidity"
-          subTitle="Decentralized Transparency Fund Platform"
+          subTitle="Decentralized Transparency Fund Projects Platform"
           style={{ cursor: "pointer" }}
         />
       </a>

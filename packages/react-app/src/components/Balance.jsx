@@ -36,7 +36,7 @@ const Balance = ({
   };
 
   usePoller(() => getBalance(),
-    pollTime ? pollTime : 1999,
+    pollTime ? pollTime : 5000,
   );
 
   let floatBalance = parseFloat("0.00");
