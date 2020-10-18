@@ -66,8 +66,13 @@ export const ConditionalButtons = (props) => {
     }
 
     const redeemTokens = async (formData) => {
-        console.log("redeemed for: ", conditionOne)
         const owner = props.provider.getSigner();
+        conditionOne = await props.CT.connect(owner).getConditionId(
+          props.firstEscrow.address,
+          "0x0000000000000000000000000000000000000000000000000000000000000001",
+          2
+        );
+        console.log("redeemed for: ", conditionOne)
         await props.CT.connect(owner).redeemPositions(
             props.Dai.address,
             "0x0000000000000000000000000000000000000000000000000000000000000000",
