@@ -5,10 +5,9 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import "./index.css";
 import App from "./App";
 
-// This is the official Uniswap v1 subgraph. You can replace it with your own, if you need to.
-// See all subgraphs: https://thegraph.com/explorer/
+//our subgraph at https://github.com/andrewhong5297/Lucidity-Funder-Tracking
 const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap",
+  uri: "https://api.thegraph.com/subgraphs/name/andrewhong5297/lucidity-funder-tracking",
 });
 
 ReactDOM.render(

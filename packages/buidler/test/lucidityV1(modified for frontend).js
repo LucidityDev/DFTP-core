@@ -46,7 +46,8 @@ describe("Lucidity Full Feature Test", function () {
     const DaiContract = await ethers.getContractFactory("Dai"); //contract name here
     Dai = await DaiContract.connect(owner).deploy(ethers.BigNumber.from("0"),overrides);
     await Dai.connect(owner).mint(owner.getAddress(),ethers.BigNumber.from("100"))
-
+    
+    console.log("all deployed")
     const daibalance = await Dai.balanceOf(owner.getAddress());
     console.log("meta address: ", await owner.getAddress());
     console.log("meta balance of Dai: ", daibalance.toString());
