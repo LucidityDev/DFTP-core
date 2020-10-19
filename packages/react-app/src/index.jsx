@@ -7,7 +7,7 @@ import App from "./App";
 
 //our subgraph at https://github.com/andrewhong5297/Lucidity-Funder-Tracking
 const client = new ApolloClient({
-  uri: "http://127.0.0.1:8000/subgraphs/name/andrewhong5297/Lucidity-Funder-Tracker" //"https://api.thegraph.com/subgraphs/name/andrewhong5297/lucidity-funder-tracking",
+  uri: "http://127.0.0.1:8000/subgraphs/name/andrewhong5297/Lucidity-Funder-Tracker" //if not on deploy-local then use "https://api.thegraph.com/subgraphs/name/andrewhong5297/lucidity-funder-tracking",
 });
 
 ReactDOM.render(
