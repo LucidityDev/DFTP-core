@@ -15,32 +15,33 @@ export const FunderPage = (props) => {
         console.log("value: ", formData.value.toString())
         console.log("tenor: ", formData.year.toString())
         console.log("dai: ", props.Dai.address)
+        console.log("firstProjectContract: ", props.firstProjectContract.address)
         try {
-        //funder approve, then call recieve from project
-        await props.Dai.connect(owner).approve(
-        props.firstProjectContract.address, //spender, called by owner
-        ethers.BigNumber.from(formData.value.toString())
-        );
+            //funder approve, then call recieve from project
+            await props.Dai.connect(owner).approve(
+            props.firstProjectContract.address, //spender, called by owner
+            ethers.BigNumber.from(formData.value.toString())
+            );
+            
+            //buy and mint first funding token
+            await props.firstProjectContract.connect(owner).buyOne(
+            ethers.BigNumber.from(formData.value.toString()), //funded value dai
+            ethers.BigNumber.from(formData.year.toString()) // tenor
+            );
 
-        //buy and mint first funding token
-        await props.firstProjectContract.connect(owner).buyOne(
-        ethers.BigNumber.from(formData.value.toString()), //funded value dai
-        ethers.BigNumber.from(formData.year.toString()) // tenor
-        );
-
-        //recieve the funding into the holder
-        await props.firstEscrow
-        .connect(owner) //anyone can call this, idk why it won't call by itself. Pay for gas fees?
-        .recieveERC20(props.firstProjectContract.address, ethers.BigNumber.from("10"));
-        
-        setError(
-            <Alert variant="danger" onClose={() => setError(null)} dismissible>
-                <Alert.Heading>Transaction went through, funding token recieved!</Alert.Heading>
-                <p>
-                Thanks for funding this project for {formData.value.toString()} and {formData.year.toString()} years!
-                </p>
-            </Alert>
-        ) 
+            //recieve the funding into the holder
+            await props.firstEscrow
+            .connect(owner) //anyone can call this, idk why it won't call by itself. Pay for gas fees?
+            .recieveERC20(props.firstProjectContract.address, ethers.BigNumber.from(formData.value.toString()));
+            
+            setError(
+                <Alert variant="success" onClose={() => setError(null)} dismissible>
+                    <Alert.Heading>Transaction went through, funding token recieved!</Alert.Heading>
+                    <p>
+                    Thanks for funding this project for {formData.value.toString()} dollars and {formData.year.toString()} years!
+                    </p>
+                </Alert>
+            ) 
     
          }
          catch(e) {
@@ -61,11 +62,11 @@ export const FunderPage = (props) => {
             <h5>{welcome}</h5>
                 <form onSubmit={handleSubmit(buyOne)}>
                     <label>
-                    Fund project for how much dai?
+                    Fund project for how much dai?   :  
                     <input type="text" name="value" ref={register} />
                     </label>
                     <label>
-                    Fund project for how many years?
+                    :    Fund project for how many years?   :
                     <input type="text" name="year" ref={register} />
                     </label>
                     <input type="submit" value="Submit" />

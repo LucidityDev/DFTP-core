@@ -59,7 +59,7 @@ describe("Lucidity Full Feature Test", function () {
   it("deploy first escrow and project (Called from openlaw)", async function () {
     //deploy escrow
     await HolderFactory.connect(owner).deployNewHolder(
-      "AgriTest",
+      "Honduras Agriculture Project",
       CT.address,
       Dai.address,
       owner.getAddress(),
@@ -70,7 +70,7 @@ describe("Lucidity Full Feature Test", function () {
       overrides
     );
 
-    const escrow = await HolderFactory.getHolder("AgriTest");
+    const escrow = await HolderFactory.getHolder("Honduras Agriculture Project");
 
     const firstEscrow = new ethers.Contract(
       escrow.projectAddress,
@@ -80,7 +80,7 @@ describe("Lucidity Full Feature Test", function () {
 
     //deploy project
     await TokenFactory.connect(owner).deployNewProject(
-      "AgriTest",
+      "Honduras Agriculture Project",
       "AT",
       "linkhere",
       Dai.address,
@@ -90,7 +90,7 @@ describe("Lucidity Full Feature Test", function () {
       overrides
     );
 
-    const project = await TokenFactory.getProject("AgriTest");
+    const project = await TokenFactory.getProject("Honduras Agriculture Project");
 
     const firstProjectContract = new ethers.Contract(
       project.projectAddress,
@@ -117,7 +117,7 @@ describe("Lucidity Full Feature Test", function () {
     const [owner, bidder, auditor, funder] = await ethers.getSigners(); //jsonrpc signers from default 20 accounts with 10000 ETH each
 
     //get first escrow and project contract again
-    const escrow = await HolderFactory.getHolder("AgriTest");
+    const escrow = await HolderFactory.getHolder("Honduras Agriculture Project");
 
     const firstEscrow = new ethers.Contract(
       escrow.projectAddress,
@@ -125,7 +125,7 @@ describe("Lucidity Full Feature Test", function () {
       ethers.getDefaultProvider()
     );
 
-    const project = await TokenFactory.getProject("AgriTest");
+    const project = await TokenFactory.getProject("Honduras Agriculture Project");
 
     const firstProjectContract = new ethers.Contract(
       project.projectAddress,

@@ -41,32 +41,32 @@ describe("Lucidity Full Feature Test", function () {
 
     //deploy escrow
     await HolderFactory.connect(bidder).deployNewHolder(
-      "AgriTest",
+      "Honduras Agriculture Project",
       CT.address,
       Dai.address,
       owner.getAddress(),
       bidder.getAddress(),
       auditor.getAddress(),
       ethers.BigNumber.from("300"),
-      ethers.BigNumber.from("3")
+      ethers.BigNumber.from("36")
     );
 
-    const escrow = await HolderFactory.getHolder("AgriTest");
+    const escrow = await HolderFactory.getHolder("Honduras Agriculture Project");
 
     const firstEscrow = new ethers.Contract(
       escrow.projectAddress,
       abiEscrow,
       owner
     );
-
+    console.log("Project Name: ", await firstEscrow.projectName())
     const budgets = await firstEscrow.budgetsOne()
-    console.log("budgets: ", budgets.toString())
+    console.log(`budgets: ${budgets.toString()} dai`)
     const timeline = await firstEscrow.timelineOne()
-    console.log("timeline: ", timeline.toString())
+    console.log(`timeline: ${timeline.toString()} months`)
 
     //deploy project
     await TokenFactory.connect(bidder).deployNewProject(
-      "AgriTest",
+      "Honduras Agriculture Project",
       "AT",
       "linkhere",
       Dai.address,
@@ -75,7 +75,7 @@ describe("Lucidity Full Feature Test", function () {
       auditor.getAddress()
     );
 
-    const project = await TokenFactory.getProject("AgriTest");
+    const project = await TokenFactory.getProject("Honduras Agriculture Project");
 
     const firstProjectContract = new ethers.Contract(
       project.projectAddress,
@@ -87,7 +87,7 @@ describe("Lucidity Full Feature Test", function () {
       escrow.projectAddress);
 
     expect(
-      (await firstProjectContract.projectName()) == "AgriTest",
+      (await firstProjectContract.projectName()) == "Honduras Agriculture Project",
       "project did not get init correctly"
     );
   });
@@ -96,7 +96,7 @@ describe("Lucidity Full Feature Test", function () {
     const [owner, bidder, auditor, funder] = await ethers.getSigners(); //jsonrpc signers from default 20 accounts with 10000 ETH each
 
     //get first escrow and project contract again
-    const escrow = await HolderFactory.getHolder("AgriTest");
+    const escrow = await HolderFactory.getHolder("Honduras Agriculture Project");
 
     const firstEscrow = new ethers.Contract(
       escrow.projectAddress,
@@ -104,7 +104,7 @@ describe("Lucidity Full Feature Test", function () {
       ethers.getDefaultProvider()
     );
 
-    const project = await TokenFactory.getProject("AgriTest");
+    const project = await TokenFactory.getProject("Honduras Agriculture Project");
 
     const firstProjectContract = new ethers.Contract(
       project.projectAddress,
@@ -193,7 +193,7 @@ describe("Lucidity Full Feature Test", function () {
     const [owner, bidder, auditor, funder] = await ethers.getSigners(); //jsonrpc signers from default 20 accounts with 10000 ETH each
 
     //escrow acts as oracle here
-    const escrow = await HolderFactory.getHolder("AgriTest");
+    const escrow = await HolderFactory.getHolder("Honduras Agriculture Project");
 
     const firstEscrow = new ethers.Contract(
       escrow.projectAddress,

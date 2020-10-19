@@ -23,12 +23,11 @@ export const BidderPage = (props) => {
                 [ethers.BigNumber.from("1")]
             );
 
-            const daibalance = await props.Dai.balanceOf(props.address);
             setError(
                 <Alert variant="success" onClose={() => setError(null)} dismissible>
                     <Alert.Heading>New Funds Redeemed!</Alert.Heading>
                     <p>
-                    Congrats on hitting the milestone, you now have {daibalance.toString()} dai in your wallet.
+                    Congrats on hitting the milestone, your new dai is being sent to your wallet.
                     </p>
                 </Alert>
             ) 

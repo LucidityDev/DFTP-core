@@ -7,7 +7,7 @@ import { getDefaultProvider, JsonRpcProvider, Web3Provider } from "@ethersprojec
 import { useUserAddress } from "eth-hooks";
 // ui libs
 import Web3Modal from "web3modal";
-import { Container, Row, Col, Card, Dropdown, Alert } from "react-bootstrap"
+import { Button, Container, Row, Col, Card, Dropdown, Alert } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // common libs
@@ -19,14 +19,14 @@ import "./App.css";
 
 //added stuff
 import { ethers } from "ethers";
-import { Buttons } from "./components/mainComponents/funderButtons"
+import { Buttons } from "./components/mainComponents/funderButtons";
 import { useForm } from "react-hook-form";
 
-import { HomePage } from "./components/pages/HomePage"
-import { FunderPage } from "./components/pages/FunderPage"
-import { OwnerPage } from "./components/pages/OwnerPage"
-import { AuditorPage } from "./components/pages/AuditorPage"
-import { BidderPage } from "./components/pages/BidderPage"
+import { HomePage } from "./components/pages/HomePage";
+import { FunderPage } from "./components/pages/FunderPage";
+import { OwnerPage } from "./components/pages/OwnerPage";
+import { AuditorPage } from "./components/pages/AuditorPage";
+import { BidderPage } from "./components/pages/BidderPage";
 
 const { abi: abiToken } = require("./abis/SecurityToken.json");
 const { abi: abiEscrow } = require("./abis/HolderContract.json");
@@ -34,7 +34,6 @@ const { abi: abiTokenF } = require("./abis/TokenFactory.json");
 const { abi: abiEscrowF } = require("./abis/HolderFactory.json");
 const { abi: abiDai } = require("./abis/Dai.json");
 const { abi: abiCT } = require("./abis/ConditionalTokens.json");
-
 
 /* IMPORTANT STEPS FOR TESTING 
 1) Start buidler node
@@ -46,7 +45,6 @@ const { abi: abiCT } = require("./abis/ConditionalTokens.json");
 7) click update balance, if this works then everything should work now. 
 8) search for "AgriTest" to link those contracts
 */
-//
 
 // 🔭 block explorer URL
 const blockExplorer = "https://etherscan.io/" // for xdai: "https://blockscout.com/poa/xdai/"
@@ -85,8 +83,6 @@ function App() {
     }
   }, [loadWeb3Modal]);
 
-  console.log("Location:", window.location.pathname)
-
   // const [route, setRoute] = useState();
   // useEffect(() => {
   //   console.log("SETTING ROUTE", window.location.pathname)
@@ -94,8 +90,8 @@ function App() {
   // }, [window.location.pathname]);
   
   //not part of scaffold-eth
-  const [firstEscrow, setEscrow] = useState([]);
-  const [firstProjectContract, setProject] = useState([]);
+  const [firstEscrow, setEscrow] = useState(null);
+  const [firstProjectContract, setProject] = useState(null);
   const { register, handleSubmit } = useForm(); //for project name submission
 
   //initial links
@@ -131,20 +127,20 @@ function App() {
     
     try {
       const escrow = await HolderFactory.getHolder(formData.value);
-      console.log("escrow address: ", escrow.projectAddress)
       setEscrow(new ethers.Contract(
         escrow.projectAddress,
         abiEscrow,
         userProvider
       ))
+      console.log("set escrow: ", await firstEscrow.address)
 
       const project = await TokenFactory.getProject(formData.value);
-      console.log("project address: ", project.projectAddress)
       setProject(new ethers.Contract(
         project.projectAddress,
         abiToken,
         userProvider
       ))
+      console.log("set firstProjectContract: ", await firstProjectContract.address)
       
       setError(
       <Alert variant="success" onClose={() => setError(null)} dismissible>
@@ -202,6 +198,12 @@ function App() {
     }
   }
 
+  const [daibalance, setDaiBalance] = useState(["  loading balance..."]);
+  const updateDaiBalance = async () => {
+    const daibalance = await Dai.balanceOf(address);
+    console.log(daibalance.toString())
+    setDaiBalance(`  Dai balance: ${daibalance.toString()}`)
+  }
   //openlaw link
   const link = <a href="https://lib.openlaw.io/web/default/template/LucidityRFP"> fill out RFP first</a>;   
 
@@ -277,6 +279,8 @@ function App() {
               </Container>
                 <div className="fixed-bottom">
                   <h5 style={{color: "black"}}>Wallet faucet here</h5>
+                  <Button onClick = {updateDaiBalance} size="sm">Update Dai Balance</Button>
+                  {daibalance}
                   <Buttons 
                     address={address} 
                     provider ={userProvider} 
