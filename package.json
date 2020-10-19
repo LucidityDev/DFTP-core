@@ -39,6 +39,7 @@
     ]
   },
   "dependencies": {
+    "contract-proxy-kit": "^2.2.0-alpha.1",
     "openlaw": "^0.2.46",
     "semantic-ui-react": "^2.0.0"
   }

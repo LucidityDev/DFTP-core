@@ -85,7 +85,12 @@ describe("Lucidity Full Feature Test", function () {
 
     await firstProjectContract.connect(owner).setHolder(
       escrow.projectAddress);
-
+  
+    console.log("Dai address: ", Dai.address);
+    console.log("CT address: ", CT.address);
+    console.log("firsEscrow address: ", firstEscrow.address);
+    console.log("firstProjectContract address: ", firstProjectContract.address);
+    
     expect(
       (await firstProjectContract.projectName()) == "Honduras Agriculture Project",
       "project did not get init correctly"
@@ -178,7 +183,7 @@ describe("Lucidity Full Feature Test", function () {
         .connect(funder)
         .ownerOf(ethers.BigNumber.from("0"))
     );
-
+    
     expect(
       (await firstProjectContract
         .connect(funder)

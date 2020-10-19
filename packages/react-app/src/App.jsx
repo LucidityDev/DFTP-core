@@ -21,12 +21,15 @@ import "./App.css";
 import { ethers } from "ethers";
 import { Buttons } from "./components/mainComponents/funderButtons";
 import { useForm } from "react-hook-form";
+// import CPK from "contract-proxy-kit"
+import { useQuery } from '@apollo/react-hooks';
 
 import { HomePage } from "./components/pages/HomePage";
 import { FunderPage } from "./components/pages/FunderPage";
 import { OwnerPage } from "./components/pages/OwnerPage";
 import { AuditorPage } from "./components/pages/AuditorPage";
 import { BidderPage } from "./components/pages/BidderPage";
+import { GET_FUNDERS } from "./graphql/subgraph";
 
 const { abi: abiToken } = require("./abis/SecurityToken.json");
 const { abi: abiEscrow } = require("./abis/HolderContract.json");
@@ -36,16 +39,16 @@ const { abi: abiDai } = require("./abis/Dai.json");
 const { abi: abiCT } = require("./abis/ConditionalTokens.json");
 
 /* IMPORTANT STEPS FOR TESTING 
-1) Start buidler node
+1) Start buidler node (or ganache-cli -h 0.0.0.0, if trying to use theGraph then start a docker graph-node too and deploy from lucidity-funder-tracker)
 2) Start react app
 3) click give self 1 ETH
 4) run buidler test on frontend test script (make sure your metamask mnemonic is saved in mnemonic.txt in buidler folder (and add to gitignore))
+4.5) change address and redeploy graph-node and subgraph
 5) may have to change contract addresses below since we all have different metamask accounts. You will have to restart the app to relink them. 
 6) may have to reset metamask account to sync nonce
 7) click update balance, if this works then everything should work now. 
 8) search for "AgriTest" to link those contracts
 */
-
 // 🔭 block explorer URL
 const blockExplorer = "https://etherscan.io/" // for xdai: "https://blockscout.com/poa/xdai/"
 
@@ -90,6 +93,22 @@ function App() {
   // }, [window.location.pathname]);
   
   //not part of scaffold-eth
+  //theGraph
+  const { loading, gqlerror, data } = useQuery(GET_FUNDERS);
+  const [ funderList, setList ] = useState("no funders yet")
+  const queryResult = () => {
+    if (loading) console.log("loading")
+    if (gqlerror) console.log("error")
+    else {
+      console.log(data["fundingTokens"][0]) //make this a mapping? 
+      
+        //https://www.apollographql.com/docs/react/get-started/
+        setList(data.fundingTokens.map(({ id, fundingvalue, tenor}) => (
+          <div>Funder id: {id} Funded amount: {fundingvalue.toString()} dai Funded tenor: {tenor.toString()} years</div>
+        )))
+    }
+  }
+    
   const [firstEscrow, setEscrow] = useState(null);
   const [firstProjectContract, setProject] = useState(null);
   const { register, handleSubmit } = useForm(); //for project name submission
@@ -272,7 +291,10 @@ function App() {
                         {PageState}
                       </Card>
                       <Card className="mt-1">
-                        <div>List of all Projects and Funders coming soon...</div>
+                        <div><h6>List of all funders for selected project:</h6>
+                        <Button onClick = {queryResult} size="sm">Update Funders List</Button></div>
+                        
+                        {funderList}
                       </Card>
                   </Col>
                 </Row>

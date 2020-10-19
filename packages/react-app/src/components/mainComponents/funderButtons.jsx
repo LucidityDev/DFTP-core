@@ -10,7 +10,7 @@ export const Buttons = (props) => {
     // console.log('provider: ', provider);
     // const owner = provider.getSigner(); //this seems to connect to metamask
 
-    let facuet = new ethers.Wallet("0x28d1bfbbafe9d1d4f5a11c3c16ab6bf9084de48d99fbac4058bdfa3c80b2908c")
+    let facuet = new ethers.Wallet("0x28d1bfbbafe9d1d4f5a11c3c16ab6bf9084de48d99fbac4058bdfa3c80b2908c") //this one is for buidler "0x28d1bfbbafe9d1d4f5a11c3c16ab6bf9084de48d99fbac4058bdfa3c80b2908c")
     facuet = await facuet.connect(props.provider);
     const tx = {
       to: props.address,
