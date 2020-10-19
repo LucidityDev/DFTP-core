@@ -123,11 +123,39 @@ describe("Lucidity Full Feature Test", function () {
       firstProjectContract.address //spender
     );
     console.log(
-      "How much dai will be transferred to project to mint token: ",
+      "How much dai will be transferred to project to mint token 1: ",
       allowedTransfer.toString()
     );
 
     //buy and mint first funding token
+    await firstProjectContract.connect(funder).buyOne(
+      ethers.BigNumber.from("10"), //funded value dai
+      ethers.BigNumber.from("7") // tenor
+    );
+
+    //recieve the funding into the holder
+    await firstEscrow
+      .connect(funder) //anyone can call this, idk why it won't call by itself. Pay for gas fees?
+      .recieveERC20(firstProjectContract.address, ethers.BigNumber.from("10"));
+
+    ///run it all again
+    
+    //funder approve, then call recieve from project
+    await Dai.connect(funder).approve(
+      firstProjectContract.address, //spender, called by owner
+      ethers.BigNumber.from("10")
+    );
+
+    const allowedTransfer2 = await Dai.allowance(
+      funder.getAddress(), //owner
+      firstProjectContract.address //spender
+    );
+    console.log(
+      "How much dai will be transferred to project to mint token 2: ",
+      allowedTransfer2.toString()
+    );
+
+    //buy and mint second funding token
     await firstProjectContract.connect(funder).buyOne(
       ethers.BigNumber.from("10"), //funded value dai
       ethers.BigNumber.from("7") // tenor

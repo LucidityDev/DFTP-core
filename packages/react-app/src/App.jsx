@@ -7,7 +7,7 @@ import { getDefaultProvider, JsonRpcProvider, Web3Provider } from "@ethersprojec
 import { useUserAddress } from "eth-hooks";
 // ui libs
 import Web3Modal from "web3modal";
-import { Container, Row, Col, Card, Dropdown } from "react-bootstrap"
+import { Container, Row, Col, Card, Dropdown, Alert } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // common libs
@@ -124,26 +124,48 @@ function App() {
   );
 
   //update after project name search
+  const [error, setError] = useState()
+
   const updateContracts = async (formData) => {
     console.log("searching project name: ", formData.value)
-    const escrow = await HolderFactory.getHolder(formData.value);
+    
+    try {
+      const escrow = await HolderFactory.getHolder(formData.value);
+      console.log("escrow address: ", escrow.projectAddress)
+      setEscrow(new ethers.Contract(
+        escrow.projectAddress,
+        abiEscrow,
+        userProvider
+      ))
 
-    setEscrow(new ethers.Contract(
-      escrow.projectAddress,
-      abiEscrow,
-      userProvider
-    ))
-
-    const project = await TokenFactory.getProject(formData.value);
-
-    setProject(new ethers.Contract(
-      project.projectAddress,
-      abiToken,
-      userProvider
-    ))
-
-    console.log("project and escrow linked");
-  }
+      const project = await TokenFactory.getProject(formData.value);
+      console.log("project address: ", project.projectAddress)
+      setProject(new ethers.Contract(
+        project.projectAddress,
+        abiToken,
+        userProvider
+      ))
+      
+      setError(
+      <Alert variant="success" onClose={() => setError(null)} dismissible>
+          <Alert.Heading>Link Worked</Alert.Heading>
+          <p>
+          Project and escrow have been linked, feel free to continue
+          </p>
+      </Alert>)
+    }
+    catch(e) {
+      console.log("error caught");
+      setError(
+              <Alert variant="danger" onClose={() => setError(null)} dismissible>
+                  <Alert.Heading>Link Error</Alert.Heading>
+                  <p>
+                  Looks like that didn't go through - make sure you spelled the name of the project correctly.
+                  </p>
+              </Alert>
+          ) 
+      }
+    }
 
   //roles dropdown
   const [PageState, setPage] = useState([<HomePage />])
@@ -244,6 +266,7 @@ function App() {
                           </label>
                           <input type="submit" value="Submit" />
                         </form>
+                        {error}
                         {PageState}
                       </Card>
                       <Card className="mt-1">

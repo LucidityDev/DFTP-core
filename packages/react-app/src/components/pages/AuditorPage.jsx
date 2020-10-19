@@ -73,10 +73,10 @@ export const AuditorPage = (props) => {
                 <h5>{welcome}</h5>
                 <div>Use the following to control the escrow/conditional tokens </div>
                 <button onClick = {setConditions} variant="primary" className="btn-sm m-2">
-                    1) Set milestone
+                    1) Set first milestone
                 </button>
                 <button onClick = {reportAudit} variant="primary" className="btn-sm m-2">
-                    2) Report Payout
+                    2) Confirm first milestone was met
                 </button>
             </React.Fragment>
          );
