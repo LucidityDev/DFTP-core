@@ -35,6 +35,10 @@ contract HolderContract is ERC1155Holder {
     uint256 public numberMilestones = 3; //make this dynamic later, should we store
     uint256 public budgetsOne;
     uint256 public timelineOne;
+    uint256 public budgetsTwo;
+    uint256 public timelineTwo;
+    uint256 public budgetsThree;
+    uint256 public timelineThree;
     uint256 public totalValue = 0;
 
     constructor(
@@ -45,7 +49,11 @@ contract HolderContract is ERC1155Holder {
         address _bidder,
         address _auditor,
         uint256 _budgetOne,
-        uint256 _timelineOne
+        uint256 _timelineOne,
+        uint256 _budgetsTwo,
+        uint256 _timelineTwo,
+        uint256 _budgetsThree,
+        uint256 _timelineThree
     ) public {
         projectName = _projectName;
         CTtoken1155 = IERC1155(_CTtokenAddress);
@@ -57,6 +65,10 @@ contract HolderContract is ERC1155Holder {
         auditor = _auditor;
         budgetsOne = _budgetOne;
         timelineOne = _timelineOne;
+        budgetsTwo = _budgetsTwo;
+        timelineTwo = _timelineTwo;
+        budgetsThree = _budgetsThree;
+        timelineThree = _timelineThree;
     }
 
     function recieveERC20(address _sender, uint256 _value) external {
@@ -85,6 +97,7 @@ contract HolderContract is ERC1155Holder {
             partition,
             value
         );
+        totalValue = totalValue.sub(value);
         //need to make it so only approve position id is transferrable? do we store in storage or call transfer internally? Since bidder is calling split,
     }
 

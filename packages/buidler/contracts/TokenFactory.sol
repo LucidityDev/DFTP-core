@@ -12,10 +12,15 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract TokenFactory {
     using Counters for Counters.Counter;
     Counters.Counter public nonce; // acts as unique identifier for minted NFTs
-
+    event NewProject(
+        string name,
+        string baseURI,
+        address project,
+        address owner,
+        address bidder,
+        address auditor
+    );
     SecurityToken[] public projects;
-
-    event ProjectCreated(address tokenAddress);
 
     mapping(string => uint256) public nameToProjectIndex;
     mapping(string => uint256) public symbolToProjectIndex;
@@ -62,7 +67,14 @@ contract TokenFactory {
         symbolToProjectIndex[_symbol] = nonce.current();
         nameToProjectIndex[_name] = nonce.current();
 
-        emit ProjectCreated(address(newProject));
+        emit NewProject(
+            _name,
+            baseURI,
+            address(newProject),
+            _projectOwner,
+            _projectBidder,
+            _auditors
+        );
 
         //should create safe in here too, and add an address variable for the safe.
         return address(newProject);

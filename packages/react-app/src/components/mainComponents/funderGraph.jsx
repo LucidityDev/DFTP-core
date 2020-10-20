@@ -2,10 +2,9 @@ import React, { useState, Component } from 'react';
 import { ethers } from "ethers";
 import CPK from "contract-proxy-kit"
 
-
 export const CPKtest = (props) => {
    const [proxyKit, setProxyKit] = useState()
-   useEffect = () => {
+   useEffect = (() => {
     const initializeCPK = async () => {
       setProxyKit(await CPK.create({ props.provider }))
     }

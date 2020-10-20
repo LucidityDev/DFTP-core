@@ -1,7 +1,45 @@
+body {
+}
+
 .App {
   text-align: center;
+  font-family: Whitney, Helvetica Neue, Helvetica, Arial, sans-serif;
+  color: #99aab5;
 }
 
 .mt-1 {
   margin-top: 1 !important;
+}
+
+.card {
+  border: 3px solid #99aab5;
+  background-color: #f4f4f5;
+  margin: 35px;
+}
+
+.cardDiv {
+  margin: 0 auto;
+  text-align: center;
+  padding: 55px;
+}
+
+.App h6 {
+  font-family: Whitney, Helvetica Neue, Helvetica, Arial, sans-serif !important;
+  color: #737f8d;
+  font-weight: 400;
+}
+
+.formCenter {
+  margin: 0 auto;
+  border: 1px solid red;
+}
+
+.col-centered {
+  float: none;
+  margin: 0 auto;
+}
+
+.buttonW {
+  width: "100px";
+  height: "10px";
 }

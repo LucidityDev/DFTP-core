@@ -29,6 +29,7 @@ import { FunderPage } from "./components/pages/FunderPage";
 import { OwnerPage } from "./components/pages/OwnerPage";
 import { AuditorPage } from "./components/pages/AuditorPage";
 import { BidderPage } from "./components/pages/BidderPage";
+
 import { GET_FUNDERS } from "./graphql/subgraph";
 
 const { abi: abiToken } = require("./abis/SecurityToken.json");
@@ -41,14 +42,13 @@ const { abi: abiCT } = require("./abis/ConditionalTokens.json");
 /* IMPORTANT STEPS FOR TESTING 
 1) Start buidler node (or ganache-cli -h 0.0.0.0, if trying to use theGraph then start a docker graph-node too and deploy from lucidity-funder-tracker)
 2) Start react app
-3) click give self 1 ETH
-4) run buidler test on frontend test script (make sure your metamask mnemonic is saved in mnemonic.txt in buidler folder (and add to gitignore))
-4.5) change address and redeploy graph-node and subgraph
+3) run buidler test on frontend test script (make sure your metamask mnemonic is saved in mnemonic.txt in buidler folder and add to gitignore)
+4) change firstproject address in subgraph.yaml and redeploy graph-node (docker-compose up) and subgraph (yarn create-local and yarn deploy-local)
 5) may have to change contract addresses below since we all have different metamask accounts. You will have to restart the app to relink them. 
 6) may have to reset metamask account to sync nonce
-7) click update balance, if this works then everything should work now. 
-8) search for "AgriTest" to link those contracts
+7) click give self 100 dai, if this works then everything should work now. 
 */
+
 // 🔭 block explorer URL
 const blockExplorer = "https://etherscan.io/" // for xdai: "https://blockscout.com/poa/xdai/"
 
@@ -92,28 +92,31 @@ function App() {
   //   setRoute(window.location.pathname)
   // }, [window.location.pathname]);
   
-  //not part of scaffold-eth
-  //theGraph
+  //theGraph API requests
   const { loading, gqlerror, data } = useQuery(GET_FUNDERS);
-  const [ funderList, setList ] = useState("no funders yet")
+  const [ funderList, setList ] = useState("No funders yet, be the first one!")
   const queryResult = () => {
     if (loading) console.log("loading")
     if (gqlerror) console.log("error")
     else {
-      console.log(data["fundingTokens"][0]) //make this a mapping? 
-      
+      console.log(data)
         //https://www.apollographql.com/docs/react/get-started/
-        setList(data.fundingTokens.map(({ id, fundingvalue, tenor}) => (
-          <div>Funder id: {id} Funded amount: {fundingvalue.toString()} dai Funded tenor: {tenor.toString()} years</div>
+        setList(data.fundingTokens.map(({ id, owner, fundingvalue, tenor}) => (
+        <div>
+          <div>Token id: {id}</div>
+          <div>Owner: {owner}</div> 
+          <div>Funded amount: {fundingvalue.toString()} dai</div>
+          <div>Funded tenor: {tenor.toString()} years</div>
+        </div>
         )))
     }
   }
     
-  const [firstEscrow, setEscrow] = useState(null);
-  const [firstProjectContract, setProject] = useState(null);
+  //Various Buttons
+  const [projectNotConnected, setConnection] = useState(true);
   const { register, handleSubmit } = useForm(); //for project name submission
 
-  //initial links
+  //initial contract links
   let Dai = new ethers.Contract(
     "0x5D49B56C954D11249F59f03287619bE5c6174879",
     abiDai,
@@ -140,27 +143,32 @@ function App() {
 
   //update after project name search
   const [error, setError] = useState()
-
+  const [firstEscrow, setEscrow] = useState(null);
+  const [firstProjectContract, setProject] = useState(null);
   const updateContracts = async (formData) => {
     console.log("searching project name: ", formData.value)
     
     try {
       const escrow = await HolderFactory.getHolder(formData.value);
-      setEscrow(new ethers.Contract(
+      console.log("is await failing?")
+      console.log(escrow.projectAddress)
+      const project = await TokenFactory.getProject(formData.value);
+      console.log("it isnt failing?")
+      console.log(project.projectAddress)
+
+      setEscrow(await new ethers.Contract(
         escrow.projectAddress,
         abiEscrow,
         userProvider
       ))
-      console.log("set escrow: ", await firstEscrow.address)
-
-      const project = await TokenFactory.getProject(formData.value);
-      setProject(new ethers.Contract(
+  
+      setProject(await new ethers.Contract(
         project.projectAddress,
         abiToken,
         userProvider
       ))
-      console.log("set firstProjectContract: ", await firstProjectContract.address)
-      
+
+      setConnection(false) //enables buttons
       setError(
       <Alert variant="success" onClose={() => setError(null)} dismissible>
           <Alert.Heading>Link Worked</Alert.Heading>
@@ -170,7 +178,7 @@ function App() {
       </Alert>)
     }
     catch(e) {
-      console.log("error caught");
+      console.error(e)
       setError(
               <Alert variant="danger" onClose={() => setError(null)} dismissible>
                   <Alert.Heading>Link Error</Alert.Heading>
@@ -213,10 +221,17 @@ function App() {
         CT={CT}/>)
     }
     if (e=="OwnerPage") {
-      setPage(<OwnerPage />)
+      setPage(<OwnerPage 
+        address={address} 
+        provider ={userProvider} 
+        firstEscrow = {firstEscrow}
+        firstProjectContract = {firstProjectContract}
+        Dai = {Dai}
+        CT={CT}/>)
     }
   }
 
+  //setting dai balance at bottom left
   const [daibalance, setDaiBalance] = useState(["  loading balance..."]);
   const updateDaiBalance = async () => {
     const daibalance = await Dai.balanceOf(address);
@@ -247,60 +262,56 @@ function App() {
         <BrowserRouter>
           <Switch>
             <Route exact path="/">
-              {/*
-                  🎛 this scaffolding is full of commonly used components
-                  this <Contract/> component will automatically parse your ABI
-                  and give you a form to interact with it locally
-              */}
-              {/* <Contract
-                name="YourContract"
-                signer={userProvider.getSigner()}
-                provider={localProvider}
-                address={address}
-                blockExplorer={blockExplorer}
-              /> */}
               <Container fluid="md">
                 <Row className="mt-1">
                     <Col>
                     <Card>
-                      <div>
-                        <h5>Welcome, please select a role in the dropdown to get started. This can be changed anytime.</h5>
-                          <Dropdown onSelect={handleSelect} size="sm">
-                            <Dropdown.Toggle variant="success" id="dropdown-basic" size="sm">
-                              Roles
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                              <Dropdown.Item eventKey="OwnerPage">Owner</Dropdown.Item>
-                              <Dropdown.Item eventKey="FunderPage">Funder</Dropdown.Item>
-                              <Dropdown.Item eventKey="AuditorPage">Auditor</Dropdown.Item>
-                              <Dropdown.Item eventKey="BidderPage">Bidder</Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-                      </div>
-                      </Card>
-                      <Card className="mt-1">
-                      <h6 classname="mt-1">Please {link} for new projects, otherwise search for project name below:</h6>
-                        <form onSubmit={handleSubmit(updateContracts)}>
-                          <label>
-                            <input type="text" name="value" ref={register} />
-                          </label>
-                          <input type="submit" value="Submit" />
+                      <div className="cardDiv">
+                        <h6 classname="mt-1">Please {link} for new projects, otherwise search for project name below:</h6>
+                          <form onSubmit={handleSubmit(updateContracts)} className="">
+                            <div className="input-group mb-3">
+                                <div className="input-group-append col-centered">
+                                  <label>
+                                  <input type="text" name="value" ref={register} className="form-control" placeholder="Honduras Agriculture Project" aria-describedby="button-addon2" />
+                                  </label>
+                                  <div><button className="btn col-centeredbtn btn-outline-secondary" type="submit" value="submit" id="button-addon2">Connect to Project</button></div>
+                                </div>
+                              </div>
                         </form>
                         {error}
-                        {PageState}
+                        </div>
                       </Card>
                       <Card className="mt-1">
-                        <div><h6>List of all funders for selected project:</h6>
-                        <Button onClick = {queryResult} size="sm">Update Funders List</Button></div>
-                        
-                        {funderList}
+                        <div className="cardDiv">
+                            <Dropdown onSelect={handleSelect}>
+                              <Dropdown.Toggle variant="primary" id="dropdown-basic" size="md" disabled={projectNotConnected}>
+                                Roles
+                              </Dropdown.Toggle>
+
+                              <Dropdown.Menu>
+                                <Dropdown.Item eventKey="OwnerPage">Owner</Dropdown.Item>
+                                <Dropdown.Item eventKey="FunderPage">Funder</Dropdown.Item>
+                                <Dropdown.Item eventKey="AuditorPage">Auditor</Dropdown.Item>
+                                <Dropdown.Item eventKey="BidderPage">Bidder</Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                            <br></br>
+                            {PageState}
+                        </div>
                       </Card>
+                      <Card className="mt-1">
+                    <div className="cardDiv"><h6>List of all funders for selected project:</h6>
+                        <Button onClick = {queryResult} disabled = {projectNotConnected} size="sm">Update Funders List</Button>
+                        <div>
+                          {funderList}
+                        </div>
+                     </div>
+                    </Card>
                   </Col>
                 </Row>
               </Container>
                 <div className="fixed-bottom">
-                  <h5 style={{color: "black"}}>Wallet faucet here</h5>
+                  <h5 style={{color: "black"}}>: Localhost faucet here</h5>
                   <Button onClick = {updateDaiBalance} size="sm">Update Dai Balance</Button>
                   {daibalance}
                   <Buttons 
@@ -318,9 +329,6 @@ function App() {
   );
 }
 
-/*
-  Web3 modal helps us "connect" external wallets:
-*/
 const web3Modal = new Web3Modal({
   // network: "mainnet", // optional
   cacheProvider: true, // optional

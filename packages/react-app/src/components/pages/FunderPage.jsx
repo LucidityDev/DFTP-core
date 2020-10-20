@@ -1,13 +1,15 @@
 import React, { useState, Component } from 'react';
 import { useForm } from "react-hook-form";
 import { ethers } from "ethers";
-import { Alert } from "react-bootstrap"
-
+import { Button, Alert } from "react-bootstrap"
+import { TransactionPopUp } from "../rimble/transaction"
+const awaitTransactionMined = require ('await-transaction-mined');
 export const FunderPage = (props) => {
     const welcome = "Funder role has been selected"
 
     const { register, handleSubmit } = useForm();
     const [error, setError] = useState()
+    const [buyStatus, setStatus] = useState(null)
 
     const buyOne = async (formData) => {
         const owner = props.provider.getSigner();
@@ -18,16 +20,22 @@ export const FunderPage = (props) => {
         console.log("firstProjectContract: ", props.firstProjectContract.address)
         try {
             //funder approve, then call recieve from project
-            await props.Dai.connect(owner).approve(
+            let transaction = await props.Dai.connect(owner).approve(
             props.firstProjectContract.address, //spender, called by owner
             ethers.BigNumber.from(formData.value.toString())
             );
             
+            let TxReceipt = await props.provider.getTransactionReceipt(transaction.hash)
+            console.log(TxReceipt)
+
             //buy and mint first funding token
-            await props.firstProjectContract.connect(owner).buyOne(
+            transaction = await props.firstProjectContract.connect(owner).buyOne(
             ethers.BigNumber.from(formData.value.toString()), //funded value dai
             ethers.BigNumber.from(formData.year.toString()) // tenor
             );
+
+            TxReceipt = await props.provider.getTransactionReceipt(transaction.hash)
+            console.log(TxReceipt)
 
             //recieve the funding into the holder
             await props.firstEscrow
@@ -41,11 +49,10 @@ export const FunderPage = (props) => {
                     Thanks for funding this project for {formData.value.toString()} dollars and {formData.year.toString()} years!
                     </p>
                 </Alert>
-            ) 
-    
+            )     
          }
          catch(e) {
-            console.log("error caught");
+            console.error(e)
             setError(
                     <Alert variant="danger" onClose={() => setError(null)} dismissible>
                         <Alert.Heading>Transaction Error</Alert.Heading>
@@ -59,7 +66,7 @@ export const FunderPage = (props) => {
 
         return ( 
             <React.Fragment>
-            <h5>{welcome}</h5>
+            <h6>{welcome}</h6>
                 <form onSubmit={handleSubmit(buyOne)}>
                     <label>
                     Fund project for how much dai?   :  
@@ -70,6 +77,7 @@ export const FunderPage = (props) => {
                     <input type="text" name="year" ref={register} />
                     </label>
                     <input type="submit" value="Submit" />
+                    {buyStatus}
                     {error}
                 </form>
             </React.Fragment>

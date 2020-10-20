@@ -47,8 +47,12 @@ describe("Lucidity Full Feature Test", function () {
       owner.getAddress(),
       bidder.getAddress(),
       auditor.getAddress(),
+      ethers.BigNumber.from("500"),
+      ethers.BigNumber.from("36"),
       ethers.BigNumber.from("300"),
-      ethers.BigNumber.from("36")
+      ethers.BigNumber.from("32"),
+      ethers.BigNumber.from("800"),
+      ethers.BigNumber.from("24"),
     );
 
     const escrow = await HolderFactory.getHolder("Honduras Agriculture Project");

@@ -15,7 +15,7 @@ contract SecurityToken is ERC721, AccessControl, ReentrancyGuard {
     using SafeMath for uint256;
     using Address for address payable;
 
-    event newFunder(address funder, uint256 value, uint256 tenor);
+    event newFunder(uint256 tokenId, address funder, uint256 value, uint256 tenor);
 
     IERC20 public ERC20token; //rinkeby, may need to adjust for USDC
     string public projectName;
@@ -97,6 +97,7 @@ contract SecurityToken is ERC721, AccessControl, ReentrancyGuard {
         IDtoToken[tokenId] = fundedTokens[tokenId];
 
         emit newFunder(
+            tokenId,
             fundedTokens[tokenId].projectFunder,
             fundedTokens[tokenId].fundingValue,
             fundedTokens[tokenId].tenor

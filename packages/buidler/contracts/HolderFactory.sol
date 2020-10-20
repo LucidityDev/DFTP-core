@@ -22,7 +22,11 @@ contract HolderFactory {
         address _projectBidder,
         address _projectAuditor,
         uint256 _budgetOne,
-        uint256 _timelineOne
+        uint256 _timelineOne,
+        uint256 _budgetsTwo,
+        uint256 _timelineTwo,
+        uint256 _budgetsThree,
+        uint256 _timelineThree
     ) public returns (address) {
         //need to check if name or symbol already exists
         require(nameToHolderIndex[_name] == 0, "Name has already been taken");
@@ -34,7 +38,11 @@ contract HolderFactory {
             _projectBidder,
             _projectAuditor,
             _budgetOne,
-            _timelineOne
+            _timelineOne,
+            _budgetsTwo,
+            _timelineTwo,
+            _budgetsThree,
+            _timelineThree
         );
         holders.push(newProject);
 

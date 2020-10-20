@@ -7,15 +7,20 @@
 
 
 
-# 💡 Lucidity
+![alt text](https://github.com/andrewhong5297/DFTP-core/blob/master/research/LogoLucidity.png?raw=true)
 
 ### Management of Funds for Projects/Contracts/Services for Private/Public Organizations the MVP is a DAPP that will evolve in a Protocol 
+Localhost site here: http://lucidity-eth.surge.sh/
 
+Rinkeby site here: http://lucidity-eth-R.surge.sh
 
 ## Proposal of MVP
 
-![alt text](https://github.com/LucidityDev/DFTP-core/blob/master/research/proposal.png?raw=true)
+![alt text](https://github.com/andrewhong5297/DFTP-core/blob/master/research/proposal.PNG?raw=true)
 
+## Mission Statement
+
+![alt text](https://github.com/andrewhong5297/DFTP-core/blob/master/research/mission.png?raw=true)
 
 🎛 <b>first</b>
 
@@ -59,9 +64,7 @@ yarn deploy
 # Technologies Used
 
 ## Solidity
-## CTokens
+## Gnosis CTokens
 ## The Graph API
-## Matic
-## ENS
-## USDC
+## OpenLaw
 

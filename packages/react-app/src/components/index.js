@@ -19,7 +19,7 @@ export { default as Projects } from "./Projects";
 
 
 export const Body = styled.body`
-  background-color: #FAEBD7;
+  background-color: #f4f4f5;
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 70px);

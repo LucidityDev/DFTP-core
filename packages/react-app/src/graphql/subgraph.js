@@ -1,7 +1,6 @@
 import { gql } from "apollo-boost";
 
 // See more example queries on https://thegraph.com/explorer/subgraph/paulrberg/create-eth-app
-// https://stackoverflow.com/questions/18200248/cloning-a-repo-from-someone-elses-github-and-pushing-it-to-a-repo-on-my-github
 // follow steps for local testing: https://thegraph.com/docs/quick-start#local-development
 // cd graph-node/docker after git clone, then after docker up, $ graph init --from-example andrewhong5297/Lucidity-Funder-Tracker
 // after yarn codegen:
