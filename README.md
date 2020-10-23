@@ -7,9 +7,14 @@
 
 
 
-🎥.[Lucidity: Public Project Bidding and Management on the Blockchain](https://www.youtube.com/watch?v=yaDzifphaLc)
+
 
 ![alt text](https://github.com/andrewhong5297/DFTP-core/blob/master/research/LogoLucidity.png?raw=true)
+
+
+
+🎥.[Lucidity: Public Project Bidding and Management on the Blockchain](https://www.youtube.com/watch?v=yaDzifphaLc)
+
 
 ### Management of Funds for Projects/Contracts/Services for Private/Public Organizations the MVP is a DAPP that will evolve in a Protocol 
 Localhost site here: http://lucidity-eth.surge.sh/
