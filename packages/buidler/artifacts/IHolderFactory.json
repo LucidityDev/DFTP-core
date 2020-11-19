@@ -1,0 +1,63 @@
+{
+  "contractName": "IHolderFactory",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "_CTtokenAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_ERC20token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_projectBidder",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_projectAuditor",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_budgets",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_timelines",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "deployNewHolder",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

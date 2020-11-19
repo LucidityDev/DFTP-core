@@ -2,14 +2,12 @@ import React, { useState, Component } from 'react';
 import { useForm } from "react-hook-form";
 import { ethers } from "ethers";
 import { Button, Alert } from "react-bootstrap"
-import { TransactionPopUp } from "../rimble/transaction"
-const awaitTransactionMined = require ('await-transaction-mined');
+
 export const FunderPage = (props) => {
     const welcome = "Funder role has been selected"
 
     const { register, handleSubmit } = useForm();
     const [error, setError] = useState()
-    const [buyStatus, setStatus] = useState(null)
 
     const buyOne = async (formData) => {
         const owner = props.provider.getSigner();
@@ -17,11 +15,11 @@ export const FunderPage = (props) => {
         console.log("value: ", formData.value.toString())
         console.log("tenor: ", formData.year.toString())
         console.log("dai: ", props.Dai.address)
-        console.log("firstProjectContract: ", props.firstProjectContract.address)
+        console.log("Project: ", props.Project.address)
         try {
             //funder approve, then call recieve from project
             let transaction = await props.Dai.connect(owner).approve(
-            props.firstProjectContract.address, //spender, called by owner
+            props.Project.address, //spender, called by owner
             ethers.BigNumber.from(formData.value.toString())
             );
             
@@ -29,7 +27,7 @@ export const FunderPage = (props) => {
             console.log(TxReceipt)
 
             //buy and mint first funding token
-            transaction = await props.firstProjectContract.connect(owner).buyOne(
+            transaction = await props.Project.connect(owner).buyOne(
             ethers.BigNumber.from(formData.value.toString()), //funded value dai
             ethers.BigNumber.from(formData.year.toString()) // tenor
             );
@@ -38,9 +36,9 @@ export const FunderPage = (props) => {
             console.log(TxReceipt)
 
             //recieve the funding into the holder
-            await props.firstEscrow
+            await props.escrow
             .connect(owner) //anyone can call this, idk why it won't call by itself. Pay for gas fees?
-            .recieveERC20(props.firstProjectContract.address, ethers.BigNumber.from(formData.value.toString()));
+            .recieveERC20(props.Project.address, ethers.BigNumber.from(formData.value.toString()));
             
             setError(
                 <Alert variant="success" onClose={() => setError(null)} dismissible>
@@ -77,7 +75,6 @@ export const FunderPage = (props) => {
                     <input type="text" name="year" ref={register} />
                     </label>
                     <input type="submit" value="Submit" />
-                    {buyStatus}
                     {error}
                 </form>
             </React.Fragment>

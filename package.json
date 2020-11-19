@@ -10,6 +10,12 @@
   ],
   "private": true,
   "scripts": {
+    "local-node": "cd packages/buidler && npx buidler node",
+    "local-deploy": "cd packages/buidler && npx buidler test",
+    "local-graph": "cd packages/graph-node/docker && docker-compose up",
+    "local-graph-deploy": "cd packages/graph-node/lucidity-funder-tracker && yarn create-local && yarn deploy-local && cd .. && cd lucidity-neg-track2 && yarn create-local && yarn deploy-local",
+    "local-graph-deleteW": "cd packages/graph-node/docker && rd /q /s data",
+    "local-graph-deleteM": "cd packages/graph-node/docker && rm -rf data",
     "react-app:build": "yarn workspace @scaffold-eth/react-app build --max-old-space-size=12288",
     "react-app:eject": "yarn workspace @scaffold-eth/react-app eject",
     "react-app:start": "yarn workspace @scaffold-eth/react-app start",
@@ -39,7 +45,9 @@
     ]
   },
   "dependencies": {
+    "3box": "^1.22.2",
     "contract-proxy-kit": "^2.2.0-alpha.1",
+    "express": "^4.17.1",
     "openlaw": "^0.2.46",
     "semantic-ui-react": "^2.0.0"
   }

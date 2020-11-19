@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.6.0 <0.7.0;
 
-import "./HolderContractERC20.sol";
+import "./HolderContract.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract HolderFactory {
@@ -15,34 +15,26 @@ contract HolderFactory {
     mapping(string => uint256) public nameToHolderIndex;
 
     function deployNewHolder(
-        string memory _name,
+        string calldata _name,
         address _CTtokenAddress,
-        address _DaiAddress,
+        address _ERC20token,
         address _owner,
         address _projectBidder,
         address _projectAuditor,
-        uint256 _budgetOne,
-        uint256 _timelineOne,
-        uint256 _budgetsTwo,
-        uint256 _timelineTwo,
-        uint256 _budgetsThree,
-        uint256 _timelineThree
-    ) public returns (address) {
+        uint256[] calldata _budgets,
+        uint256[] calldata _timelines
+    ) external returns (address) {
         //need to check if name or symbol already exists
         require(nameToHolderIndex[_name] == 0, "Name has already been taken");
         HolderContract newProject = new HolderContract(
             _name,
             _CTtokenAddress,
-            _DaiAddress,
+            _ERC20token,
             _owner,
             _projectBidder,
             _projectAuditor,
-            _budgetOne,
-            _timelineOne,
-            _budgetsTwo,
-            _timelineTwo,
-            _budgetsThree,
-            _timelineThree
+            _budgets,
+            _timelines
         );
         holders.push(newProject);
 

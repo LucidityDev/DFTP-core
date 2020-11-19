@@ -54,13 +54,19 @@ module.exports = {
       },
     },
     mainnet: {
-      url: "https://mainnet.infura.io/v3/c954231486fa42ccb6d132b406483d14",//<---- YOUR INFURA ID! (or it won't work)
+      url: "https://mainnet.infura.io/v3/d635ea6eddda4720824cc8b24380e4a9",
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     ropsten: {
-      url: "https://ropsten.infura.io/v3/c954231486fa42ccb6d132b406483d14",//<---- YOUR INFURA ID! (or it won't work)
+      url: "https://ropsten.infura.io/v3/d635ea6eddda4720824cc8b24380e4a9",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    kovan: {
+      url: "https://ropsten.infura.io/v3/d635ea6eddda4720824cc8b24380e4a9",
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -80,6 +86,7 @@ module.exports = {
       runs: 200,
     },
   },
+  timeout: 10000,
 };
 
 const DEBUG = false;

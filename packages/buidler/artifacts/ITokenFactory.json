@@ -1,0 +1,58 @@
+{
+  "contractName": "ITokenFactory",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_symbol",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "baseURI",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "_ERC20token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_projectOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_projectBidder",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_auditors",
+          "type": "address"
+        }
+      ],
+      "name": "deployNewProject",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

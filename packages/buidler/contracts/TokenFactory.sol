@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.6.0 <0.7.0;
-import "./SecurityTokenERC20.sol";
-import "./HolderContractERC20.sol";
+import "./SecurityToken.sol";
+import "./HolderContract.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 /*
@@ -38,14 +38,14 @@ contract TokenFactory {
      * @returns token contract address
      */
     function deployNewProject(
-        string memory _name,
-        string memory _symbol,
-        string memory baseURI,
+        string calldata _name,
+        string calldata _symbol,
+        string calldata baseURI,
         address _ERC20token,
         address _projectOwner,
         address _projectBidder,
         address _auditors
-    ) public returns (address) {
+    ) external returns (address) {
         //need to check if name or symbol already exists
         require(nameToProjectIndex[_name] == 0, "Name has already been taken");
         require(
