@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import { INFURA_ID, ETHERSCAN_KEY } from "./constants";
 // blockchain libs
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -7,21 +7,19 @@ import { getDefaultProvider, JsonRpcProvider, Web3Provider } from "@ethersprojec
 import { useUserAddress } from "eth-hooks";
 // ui libs
 import Web3Modal from "web3modal";
-import { Button, Container, Row, Col, Card, Dropdown, Alert } from "react-bootstrap"
+import { Table, Button, Container, Row, Col, Card, Dropdown, Alert } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // common libs
 import { Header, Account, Body } from "./components";
-import { useExchangePrice,  useUserProvider} from "./hooks";
+import { useExchangePrice, useUserProvider } from "./hooks";
 // assets
 import "antd/dist/antd.css";
 import "./App.css";
 
 //added stuff
 import { ethers } from "ethers";
-import { Buttons } from "./components/mainComponents/funderButtons";
 import { useForm } from "react-hook-form";
-// import CPK from "contract-proxy-kit"
 import { useQuery } from '@apollo/react-hooks';
 
 import { HomePage } from "./components/pages/HomePage";
@@ -29,8 +27,11 @@ import { FunderPage } from "./components/pages/FunderPage";
 import { OwnerPage } from "./components/pages/OwnerPage";
 import { AuditorPage } from "./components/pages/AuditorPage";
 import { BidderPage } from "./components/pages/BidderPage";
-
-import { GET_FUNDERS } from "./graphql/subgraph";
+import { OpenLawForm } from "./components/pages/OpenLawPage";
+import ProjectForm from "./components/pages/OpenLawForm/ProjectForm";
+//import { TextileTest } from "./components/pages/textileInteractionsTest";
+import { GET_FUNDERS, GET_BIDS } from "./graphql/subgraph";
+import { address_data } from "./all_addresses"
 
 const { abi: abiToken } = require("./abis/SecurityToken.json");
 const { abi: abiEscrow } = require("./abis/HolderContract.json");
@@ -40,13 +41,11 @@ const { abi: abiDai } = require("./abis/Dai.json");
 const { abi: abiCT } = require("./abis/ConditionalTokens.json");
 
 /* IMPORTANT STEPS FOR TESTING 
-1) Start buidler node (or ganache-cli -h 0.0.0.0, if trying to use theGraph then start a docker graph-node too and deploy from lucidity-funder-tracker)
-2) Start react app
-3) run buidler test on frontend test script (make sure your metamask mnemonic is saved in mnemonic.txt in buidler folder and add to gitignore)
-4) change firstproject address in subgraph.yaml and redeploy graph-node (docker-compose up) and subgraph (yarn create-local and yarn deploy-local)
-5) may have to change contract addresses below since we all have different metamask accounts. You will have to restart the app to relink them. 
-6) may have to reset metamask account to sync nonce
-7) click give self 100 dai, if this works then everything should work now. 
+1) Start buidler node with yarn chain (or ganache-cli -h 0.0.0.0). Take one of the private keys and place it in the faucet address in frontend buidler test contract (line 25)
+2) Start a graph node with "docker-compose up" in graph-node/docker folder
+3) run buidler test on frontend test script with "yarn test" or "npx buidler test". Reset metamask account to sync nonce after running buidler test, otherwise you will run into rpc errors.
+4) the console of the test will print "tokenfactory address" which should go into subgraph.yaml address on line 11. Then deploy this subgraph (run "yarn create-local" and "yarn deploy-local" in lucidity-funder-tracking folder)
+5) You may have to change contract addresses lines 97-119 since we all have different metamask accounts. Start the app with "yarn start".
 */
 
 // 🔭 block explorer URL
@@ -86,82 +85,55 @@ function App() {
     }
   }, [loadWeb3Modal]);
 
-  // const [route, setRoute] = useState();
-  // useEffect(() => {
-  //   console.log("SETTING ROUTE", window.location.pathname)
-  //   setRoute(window.location.pathname)
-  // }, [window.location.pathname]);
-  
-  //theGraph API requests
-  const { loading, gqlerror, data } = useQuery(GET_FUNDERS);
-  const [ funderList, setList ] = useState("No funders yet, be the first one!")
-  const queryResult = () => {
-    if (loading) console.log("loading")
-    if (gqlerror) console.log("error")
-    else {
-      console.log(data)
-        //https://www.apollographql.com/docs/react/get-started/
-        setList(data.fundingTokens.map(({ id, owner, fundingvalue, tenor}) => (
-        <div>
-          <div>Token id: {id}</div>
-          <div>Owner: {owner}</div> 
-          <div>Funded amount: {fundingvalue.toString()} dai</div>
-          <div>Funded tenor: {tenor.toString()} years</div>
-        </div>
-        )))
-    }
-  }
-    
-  //Various Buttons
-  const [projectNotConnected, setConnection] = useState(true);
-  const { register, handleSubmit } = useForm(); //for project name submission
-
   //initial contract links
   let Dai = new ethers.Contract(
-    "0x5D49B56C954D11249F59f03287619bE5c6174879",
+    address_data.daiAddress,
     abiDai,
     userProvider
   );
 
   let CT = new ethers.Contract(
-    "0xaB2d7Ca5361B1f8E944543063d63098589bdcD1B",
+    address_data.CTAddress,
     abiCT,
     userProvider
   );
 
   let HolderFactory = new ethers.Contract(
-    "0x057F0ea335ADBeF55e66F9ddeE98Bc53D45dFFD1",
+    address_data.HFAddress,
     abiEscrowF,
     userProvider
   );
 
   let TokenFactory = new ethers.Contract(
-    "0x83Fbd04ccce2AeDd94E8e9783De26FE5D5D8a26B",
+    address_data.TFAddress,
     abiTokenF,
     userProvider
   );
 
+  const OLFaddress = address_data.OLFAddress;
+  //OL factory address: 0xDe866932D277DB5B5d8c22c4f429d8045e6d4F82
+
   //update after project name search
   const [error, setError] = useState()
-  const [firstEscrow, setEscrow] = useState(null);
-  const [firstProjectContract, setProject] = useState(null);
+  const [projectNotConnected, setConnection] = useState(true);
+  const { register, handleSubmit } = useForm(); //for project name submission
+
+  const [ProjectName, setProjectName] = useState(null);
+  const [Escrow, setEscrow] = useState(null);
+  const [Project, setProject] = useState(null);
   const updateContracts = async (formData) => {
     console.log("searching project name: ", formData.value)
-    
+
     try {
       const escrow = await HolderFactory.getHolder(formData.value);
-      console.log("is await failing?")
-      console.log(escrow.projectAddress)
       const project = await TokenFactory.getProject(formData.value);
-      console.log("it isnt failing?")
-      console.log(project.projectAddress)
 
       setEscrow(await new ethers.Contract(
         escrow.projectAddress,
         abiEscrow,
         userProvider
       ))
-  
+
       setProject(await new ethers.Contract(
         project.projectAddress,
         abiToken,
@@ -169,65 +141,67 @@ function App() {
       ))
 
       setConnection(false) //enables buttons
+      setProjectName(formData.value)
       setError(
-      <Alert variant="success" onClose={() => setError(null)} dismissible>
+        <Alert variant="success" onClose={() => setError(null)} dismissible>
           <Alert.Heading>Link Worked</Alert.Heading>
           <p>
-          Project and escrow have been linked, feel free to continue
+            Project and escrow have been linked, feel free to continue
           </p>
-      </Alert>)
+        </Alert>)
     }
-    catch(e) {
+    catch (e) {
       console.error(e)
       setError(
-              <Alert variant="danger" onClose={() => setError(null)} dismissible>
-                  <Alert.Heading>Link Error</Alert.Heading>
-                  <p>
-                  Looks like that didn't go through - make sure you spelled the name of the project correctly.
+        <Alert variant="danger" onClose={() => setError(null)} dismissible>
+          <Alert.Heading>Link Error</Alert.Heading>
+          <p>
+            Looks like that didn't go through - make sure you spelled the name of the project correctly.
                   </p>
-              </Alert>
-          ) 
-      }
+        </Alert>
+      )
     }
+  }
 
-  //roles dropdown
-  const [PageState, setPage] = useState([<HomePage />])
-  const handleSelect=(e)=>{
-    console.log(`${e} has been selected`);
-    if (e=="FunderPage") {
-      setPage(<FunderPage 
-        address={address} 
-        provider ={userProvider} 
-        firstEscrow = {firstEscrow}
-        firstProjectContract = {firstProjectContract}
-        Dai = {Dai}/>)
-    }
-    if (e=="BidderPage") {
-      setPage(<BidderPage 
-        address={address} 
-        provider ={userProvider} 
-        firstEscrow = {firstEscrow}
-        firstProjectContract = {firstProjectContract}
-        Dai = {Dai}
-        CT={CT}/>)
-    }
-    if (e=="AuditorPage") {
-      setPage(<AuditorPage 
-        address={address} 
-        provider ={userProvider} 
-        firstEscrow = {firstEscrow}
-        firstProjectContract = {firstProjectContract}
-        Dai = {Dai}
-        CT={CT}/>)
-    }
-    if (e=="OwnerPage") {
-      setPage(<OwnerPage 
-        address={address} 
-        provider ={userProvider} 
-        firstEscrow = {firstEscrow}
-        firstProjectContract = {firstProjectContract}
-        Dai = {Dai}
-        CT={CT}/>)
+  const { loading, gqlerror, data } = useQuery(GET_FUNDERS, { variables: { projectName: ProjectName } }) // options: () => ({client: client_funders})});
+  //const { loading2, gqlerror2, data2 } = useQuery(GET_BIDS, { variables: {projectName: ProjectName}}) //options: () => ({client: client_bidders})});
+  const [funderList, setList] = useState("No funders yet, be the first one!")
+  const queryResult = () => {
+    if (loading) console.log("loading")
+    if (gqlerror) console.log("error")
+    else {
+      console.log(ProjectName)
+      //https://www.apollographql.com/docs/react/get-started/
+      setList(
+        <div>
+          <br></br>
+          <h5>Project Address: {data.projects[0].projectAddress}</h5>
+          <br></br>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Token Id</th>
+                <th>Owner Address:</th>
+                <th>Funded Amount</th>
+                <th>Funded Tenor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.projects[0].fundingTokens.map(function ({ id, owner, fundingvalue, tenor }) {
+                console.log("was called")
+                return (
+                  <tr>
+                    <td>{id}</td>
+                    <td>{owner}</td>
+                    <td>{fundingvalue.toString()}</td>
+                    <td>{tenor.toString()}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </Table>
+        </div>
+      )
     }
   }
 
@@ -238,8 +212,56 @@ function App() {
     console.log(daibalance.toString())
     setDaiBalance(`  Dai balance: ${daibalance.toString()}`)
   }
+
   //openlaw link
-  const link = <a href="https://lib.openlaw.io/web/default/template/LucidityRFP"> fill out RFP first</a>;   
+  const link = <a href="https://lib.openlaw.io/web/default/template/LucidityRFP"> fill out RFP first</a>;
+
+  //roles dropdown
+  const [PageState, setPage] = useState([<HomePage />])
+  const [RoleState, setRole] = useState("Owner")
+  const handleSelect = (e) => {
+    console.log(`${e} has been selected`);
+    if (e == "FunderPage") {
+      setPage(<FunderPage
+        address={address}
+        provider={userProvider}
+        escrow={Escrow}
+        Project={Project}
+        Dai={Dai} />)
+      setRole("Funder")
+    }
+    if (e == "BidderPage") {
+      setPage(<BidderPage
+        address={address}
+        provider={userProvider}
+        escrow={Escrow}
+        Project={Project}
+        Dai={Dai}
+        CT={CT} />)
+      setRole("Bidder")
+    }
+    if (e == "AuditorPage") {
+      setPage(<AuditorPage
+        address={address}
+        provider={userProvider}
+        escrow={Escrow}
+        Project={Project}
+        Dai={Dai}
+        CT={CT} />)
+      setRole("Auditor")
+    }
+    if (e == "OwnerPage") {
+      setPage(<OwnerPage
+        address={address}
+        provider={userProvider}
+        escrow={Escrow}
+        Project={Project}
+        Dai={Dai}
+        CT={CT}
+      />)
+      setRole("Owner")
+    }
+  }
 
   return (
     <div className="App">
@@ -264,63 +286,80 @@ function App() {
             <Route exact path="/">
               <Container fluid="md">
                 <Row className="mt-1">
-                    <Col>
+                  <Col>
+                    {/* Breadcrumb + Action Bar */}
+                    <Row className="mt-4 justify-content-end">
+                      <Link to="/projects/new">
+                        <Button>New Project</Button>
+                      </Link>
+                    </Row>
+                    <Card>
+                      {/* <TextileTest /> */}
+                      <div className="cardDiv">
+                        {/* <Button onClick = {queryResultBids} size="sm">Update Bidders List (check console)</Button> */}
+                        <OpenLawForm
+                          provider={userProvider}
+                          address={address}
+                          provider={userProvider}
+                          TokenFactory={TokenFactory}
+                          HolderFactory={HolderFactory}
+                          OLFaddress={OLFaddress}
+                          CT={CT}
+                          Dai={Dai} />
+                      </div>
+                    </Card>
                     <Card>
                       <div className="cardDiv">
-                        <h6 classname="mt-1">Please {link} for new projects, otherwise search for project name below:</h6>
-                          <form onSubmit={handleSubmit(updateContracts)} className="">
-                            <div className="input-group mb-3">
-                                <div className="input-group-append col-centered">
-                                  <label>
-                                  <input type="text" name="value" ref={register} className="form-control" placeholder="Honduras Agriculture Project" aria-describedby="button-addon2" />
-                                  </label>
-                                  <div><button className="btn col-centeredbtn btn-outline-secondary" type="submit" value="submit" id="button-addon2">Connect to Project</button></div>
-                                </div>
-                              </div>
+                        <h6 className="mt-1">Please {link} or fill out form above for new projects; otherwise search for project name below:</h6>
+                        <form onSubmit={handleSubmit(updateContracts)} className="">
+                          <div className="input-group mb-3">
+                            <div className="input-group-append col-centered">
+                              <label>
+                                <input type="text" name="value" ref={register} className="form-control" placeholder="Honduras Agriculture Project" aria-describedby="button-addon2" />
+                              </label>
+                              <div><button className="btn col-centeredbtn btn-outline-secondary" type="submit" value="submit" id="button-addon2">Connect to Project</button></div>
+                            </div>
+                          </div>
                         </form>
                         {error}
-                        </div>
-                      </Card>
-                      <Card className="mt-1">
-                        <div className="cardDiv">
-                            <Dropdown onSelect={handleSelect}>
-                              <Dropdown.Toggle variant="primary" id="dropdown-basic" size="md" disabled={projectNotConnected}>
-                                Roles
+                      </div>
+                    </Card>
+                    <Card className="mt-1">
+                      <div className="cardDiv">
+                        <Dropdown onSelect={handleSelect}>
+                          <Dropdown.Toggle variant="primary" id="dropdown-basic" size="md" disabled={projectNotConnected}>
+                            Roles
                               </Dropdown.Toggle>
 
-                              <Dropdown.Menu>
-                                <Dropdown.Item eventKey="OwnerPage">Owner</Dropdown.Item>
-                                <Dropdown.Item eventKey="FunderPage">Funder</Dropdown.Item>
-                                <Dropdown.Item eventKey="AuditorPage">Auditor</Dropdown.Item>
-                                <Dropdown.Item eventKey="BidderPage">Bidder</Dropdown.Item>
-                              </Dropdown.Menu>
-                            </Dropdown>
-                            <br></br>
-                            {PageState}
-                        </div>
-                      </Card>
-                      <Card className="mt-1">
-                    <div className="cardDiv"><h6>List of all funders for selected project:</h6>
-                        <Button onClick = {queryResult} disabled = {projectNotConnected} size="sm">Update Funders List</Button>
+                          <Dropdown.Menu>
+                            <Dropdown.Item eventKey="OwnerPage">Owner</Dropdown.Item>
+                            <Dropdown.Item eventKey="FunderPage">Funder</Dropdown.Item>
+                            <Dropdown.Item eventKey="AuditorPage">Auditor</Dropdown.Item>
+                            <Dropdown.Item eventKey="BidderPage">Bidder</Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                        <br></br>
+                        {PageState}
+                      </div>
+                    </Card>
+                    <Card className="mt-1">
+                      <div className="cardDiv"><h6>List of all funders for selected project:</h6>
+                        <Button onClick={queryResult} disabled={projectNotConnected} size="sm">Update Funders List</Button>
                         <div>
                           {funderList}
                         </div>
-                     </div>
+                      </div>
                     </Card>
                   </Col>
                 </Row>
               </Container>
-                <div className="fixed-bottom">
-                  <h5 style={{color: "black"}}>: Localhost faucet here</h5>
-                  <Button onClick = {updateDaiBalance} size="sm">Update Dai Balance</Button>
-                  {daibalance}
-                  <Buttons 
-                    address={address} 
-                    provider ={userProvider} 
-                    firstEscrow = {firstEscrow}
-                    firstProjectContract = {firstProjectContract}
-                    Dai = {Dai}/>
-                </div>
+              <div className="fixed-bottom">
+                <Button onClick={updateDaiBalance} size="sm">Update Dai Balance</Button>
+                {daibalance}
+              </div>
+            </Route>
+            <Route exact path="/projects/new">
+              <ProjectForm />
             </Route>
           </Switch>
         </BrowserRouter>

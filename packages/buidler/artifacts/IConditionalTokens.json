@@ -1,0 +1,60 @@
+{
+  "contractName": "IConditionalTokens",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "questionId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "payouts",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "reportPayouts",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "collateralToken",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "parentCollectionId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "conditionId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "partition",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "splitPosition",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
