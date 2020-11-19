@@ -7,14 +7,7 @@
 
 
 
-
-
 ![alt text](https://github.com/andrewhong5297/DFTP-core/blob/master/research/LogoLucidity.png?raw=true)
-
-
-
-🎥.[Lucidity: Public Project Bidding and Management on the Blockchain](https://www.youtube.com/watch?v=yaDzifphaLc)
-
 
 ### Management of Funds for Projects/Contracts/Services for Private/Public Organizations the MVP is a DAPP that will evolve in a Protocol 
 Localhost site here: http://lucidity-eth.surge.sh/
@@ -29,7 +22,10 @@ Rinkeby site here: http://lucidity-eth-R.surge.sh
 
 ![alt text](https://github.com/andrewhong5297/DFTP-core/blob/master/research/mission.png?raw=true)
 
-🎛 <b>first</b>
+---
+You will need to add a mnemonic.txt with your metamask seed phrase in the buidler folder, this is for the faucet and deploying contracts. Make sure you add this to .gitignore and don't commit it on accident!!
+
+🎛 <b>Start</b>
 
 ```bash
 
@@ -37,41 +33,52 @@ yarn install
 
 ```
 
+🎛 <b>Start Local Chain and Deploy Contracts (You'll have to change the deployed addresses in the app.jsx file)</b>
+
+```bash
+
+yarn local-node
+
+```
+```bash
+
+yarn local-deploy
+
+```
+
+🎛 <b>Start Local Graph-Node and Deploy Subgraphs (if you restart your graph-node, you will have to empty the data folder)</b>
+
+```bash
+
+yarn local-graph
+
+```
+```bash
+
+yarn local-graph-deploy
+
+```
+
 🎛 <b>frontend</b>
 
 ```bash
 
-yarn start
+yarn react-app:start
 
 ```
 
-📱 Open http://localhost:3000
+📱 Open http://localhost:3000 You will need to reset your metamask account to sync the nonce if you get an rpc error. 
 
 ---
 
-⛓ <b>blockchain</b>
-
-```bash
-
-yarn run chain
-
-```
-
-📚 <b>Deployment</b>
-
-```bash
-
-yarn deploy
-
-```
-
-**Note**: You'll need to run this command in a new terminal window
 
 
 # Technologies Used
 
 ## Solidity
-## Gnosis CTokens
+## Gnosis Conditional Tokens
 ## The Graph API
+## Textile API
+## AAVE Risk Framework
 ## OpenLaw
 
