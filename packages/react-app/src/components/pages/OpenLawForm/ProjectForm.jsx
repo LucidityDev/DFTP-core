@@ -5,14 +5,13 @@ import { DateRangePicker, SingleDatePicker } from 'react-dates';
 import { Card, Button, Form, Col, Row, InputGroup, Modal } from 'react-bootstrap';
 // assets
 import 'react-dates/lib/css/_datepicker.css';
-import { disableExperimentalFragmentVariables } from 'graphql-tag';
 
 const MilestoneForm = ({
     show,
     handleClose
 }) => {
     const [endDate, setMilestoneEndDate] = useState(moment());
-    const [focusedInput, setFocusedInput] = useState(disableExperimentalFragmentVariables)
+    const [focusedInput, setFocusedInput] = useState()
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
