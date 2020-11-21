@@ -14,7 +14,7 @@ jobs:
       - name: Install dependencies
         uses: actions/setup-node@v1
         with:
-          node-version: '10'
+          node-version: '12'
       - run: cd packages/react-app && yarn && cd ../..
 
       - name: Build project
