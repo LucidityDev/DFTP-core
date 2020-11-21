@@ -1,0 +1,32 @@
+name: CI
+
+on: push
+
+jobs:
+  publish:
+    name: Deploy to sruge
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10'
+      - run: cd packages/react-app && yarn && cd ../..
+
+      - name: Build project
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      - run: yarn build
+
+      - name: Deploy to lucidity-eth.surge.sh/
+        uses: dswistowski/surge-sh-action@v1
+        with:
+          domain: 'lucidity-eth.surge.sh/'
+          project: '.'
+          login: ${{ secrets.SURGE_USER }}
+          token: ${{ secrets.SURGE_TOKEN }}
