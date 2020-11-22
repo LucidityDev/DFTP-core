@@ -1,0 +1,17 @@
+type Project @entity {
+  id: ID!
+  name: ID!
+  projectAddress: ID!
+  ownerAddress: ID!
+  bidderAddress: ID!
+  auditorAddress: ID!
+  fundingTokens: [FundingToken!] @derivedFrom(field: "project")
+}
+
+type FundingToken @entity {
+  id: ID!
+  project: Project!
+  owner: ID!
+  fundingvalue: BigInt!
+  tenor: BigInt!
+}

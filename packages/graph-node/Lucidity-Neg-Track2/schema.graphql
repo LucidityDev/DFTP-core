@@ -1,0 +1,19 @@
+type Project @entity {
+  id: ID!
+  name: ID!
+  ownerAddress: ID!
+  projectAddress: ID!
+  allBids: [Bids!] @derivedFrom(field: "project")
+  originalTimelines: [BigInt!]
+  originalBudgets: [BigInt!]
+  milestones: String!
+}
+
+type Bids @entity {
+  id: ID!
+  project: Project!
+  bidderAddress: ID!
+  bidDate: Int!
+  timelines: [BigInt!]
+  budgets: [BigInt!]
+}
